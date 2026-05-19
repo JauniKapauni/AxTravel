@@ -4,3 +4,4 @@ database:
   database: axtravel
   username: root
   password:
+spawnOnJoin: true

@@ -9,3 +9,15 @@ load: POSTWORLD
 
 authors: [ JauniKapauni ]
 website: https://github.com/JauniKapauni
+
+commands:
+  home:
+  homes:
+  sethome:
+  setspawn:
+  setwarp:
+  spawn:
+  tp:
+  tphere:
+  warp:
+  warps:

@@ -1,0 +1,35 @@
+package de.jaunikapauni.axtravel.command;
+
+import de.jaunikapauni.axtravel.AxTravel;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+public class TeleportHereCommand implements CommandExecutor {
+    AxTravel reference;
+    public TeleportHereCommand(AxTravel reference){
+        this.reference = reference;
+    }
+
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        if(!(sender instanceof Player)){
+            sender.sendMessage("Only players can run this command!");
+            return true;
+        }
+        if(args.length == 0){
+            sender.sendMessage(ChatColor.RED + "Please enter a playername!");
+            return false;
+        }
+        Player p = (Player) sender;
+        Player target = Bukkit.getPlayer(args[0]);
+        target.teleport(p.getLocation());
+        target.sendMessage(ChatColor.GREEN + "You were teleported to " + p.getName());
+        p.sendMessage(ChatColor.GREEN + target.getName() + " was teleported to you");
+        return true;
+    }
+}
