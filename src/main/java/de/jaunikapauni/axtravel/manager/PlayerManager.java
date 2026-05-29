@@ -87,15 +87,16 @@ public class PlayerManager {
     public void setWarp(Player p, Location loc, String name) {
         try (Connection conn = reference.getDatabaseManager().getConnection()) {
             UUID uuid = p.getUniqueId();
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO warps(uuid, world, x, y, z, pitch, yaw, name) VALUES (?,?,?,?,?,?,?,?)");
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO warps(uuid, server, world, x, y, z, pitch, yaw, name) VALUES (?,?,?,?,?,?,?,?,?)");
             ps.setString(1, uuid.toString());
-            ps.setString(2, loc.getWorld().getName());
-            ps.setDouble(3, loc.x());
-            ps.setDouble(4, loc.y());
-            ps.setDouble(5, loc.z());
-            ps.setDouble(6, loc.getPitch());
-            ps.setDouble(7, loc.getYaw());
-            ps.setString(8, name);
+            ps.setString(2, reference.getMessage("server"));
+            ps.setString(3, loc.getWorld().getName());
+            ps.setDouble(4, loc.x());
+            ps.setDouble(5, loc.y());
+            ps.setDouble(6, loc.z());
+            ps.setDouble(7, loc.getPitch());
+            ps.setDouble(8, loc.getYaw());
+            ps.setString(9, name);
             ps.executeUpdate();
             p.sendMessage("Your warp " + name + " was set!");
         } catch (SQLException e) {
@@ -106,9 +107,8 @@ public class PlayerManager {
     public void warp(Player p, String name) {
         try (Connection conn = reference.getDatabaseManager().getConnection()) {
             UUID uuid = p.getUniqueId();
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM warps name = ?");
-            ps.setString(1, uuid.toString());
-            ps.setString(2, name);
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM warps WHERE name = ?");
+            ps.setString(1, name);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 World world = Bukkit.getWorld("world");
@@ -227,5 +227,28 @@ public class PlayerManager {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String[] getWarp(Player p, String name) {
+        try (Connection conn = reference.getDatabaseManager().getConnection()) {
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM warps WHERE name = ?")) {
+                ps.setString(1, name);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    return new String[]{
+                            rs.getString("server"),
+                            rs.getString("world"),
+                            String.valueOf(rs.getDouble("x")),
+                            String.valueOf(rs.getDouble("y")),
+                            String.valueOf(rs.getDouble("z")),
+                            String.valueOf(rs.getFloat("yaw")),
+                            String.valueOf(rs.getFloat("pitch"))
+                    };
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return new String[0];
     }
 }
