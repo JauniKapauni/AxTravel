@@ -29,27 +29,7 @@ public class HomeCommand implements CommandExecutor {
             return true;
         }
         Player p = (Player) sender;
-        try(Connection conn = reference.getDatabaseManager().getConnection()){
-            UUID uuid = p.getUniqueId();
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM homes WHERE uuid = ? AND name = ?");
-            ps.setString(1, uuid.toString());
-            ps.setString(2, args[0]);
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()){
-                World world = Bukkit.getWorld("world");
-                double x = rs.getDouble("x");
-                double y = rs.getDouble("y");
-                double z = rs.getDouble("z");
-                float yaw = rs.getFloat("yaw");
-                float pitch = rs.getFloat("pitch");
-                Location loc = new Location(world, x, y, z, yaw, pitch);
-                String name = rs.getString("name");
-                p.teleport(loc);
-                p.sendMessage("You was teleported to " + name);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        reference.getPlayerManager().home(p, args[0]);
         return true;
     }
 }

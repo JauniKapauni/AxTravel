@@ -28,22 +28,7 @@ public class SetWarpCommand implements CommandExecutor {
         }
         Player p = (Player) sender;
         Location loc = Bukkit.getServer().getPlayer(p.getUniqueId()).getLocation();
-        try(Connection conn = reference.getDatabaseManager().getConnection()){
-            UUID uuid = p.getUniqueId();
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO warps(uuid, world, x, y, z, pitch, yaw, name) VALUES (?,?,?,?,?,?,?,?)");
-            ps.setString(1, uuid.toString());
-            ps.setString(2, loc.getWorld().getName());
-            ps.setDouble(3, loc.x());
-            ps.setDouble(4, loc.y());
-            ps.setDouble(5, loc.z());
-            ps.setDouble(6, loc.getPitch());
-            ps.setDouble(7, loc.getYaw());
-            ps.setString(8, args[0]);
-            ps.executeUpdate();
-            p.sendMessage("Your warp " + args[0] + " was set!");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return false;
+        reference.getPlayerManager().setWarp(p, loc, args[0]);
+        return true;
     }
 }

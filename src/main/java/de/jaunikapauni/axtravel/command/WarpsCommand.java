@@ -25,22 +25,7 @@ public class WarpsCommand implements CommandExecutor {
             return true;
         }
         Player p = (Player) sender;
-        try (Connection conn = reference.getDatabaseManager().getConnection()) {
-            UUID uuid = p.getUniqueId();
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM warps WHERE uuid = ?");
-            ps.setString(1, uuid.toString());
-            ResultSet rs = ps.executeQuery();
-            p.sendMessage("Warps:");
-            while (rs.next()) {
-                int x = rs.getInt("x");
-                int y = rs.getInt("y");
-                int z = rs.getInt("z");
-                String name = rs.getString("name");
-                p.sendMessage("- " + name + "(" + x + "|" + y + "|" + z + ")");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        reference.getPlayerManager().warps(p);
         return true;
     }
 }
