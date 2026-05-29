@@ -4,9 +4,16 @@ import de.jaunikapauni.axtravel.command.*;
 import de.jaunikapauni.axtravel.listener.PlayerJoinListener;
 import de.jaunikapauni.axtravel.manager.DatabaseManager;
 import de.jaunikapauni.axtravel.manager.PlayerManager;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+
 public final class AxTravel extends JavaPlugin {
+    File serverFile;
+    FileConfiguration serverFileConfig;
+    String server;
     DatabaseManager databaseManager;
     public DatabaseManager getDatabaseManager(){
         return databaseManager;
@@ -20,11 +27,13 @@ public final class AxTravel extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         saveDefaultConfig();
+        createLangFile();
+        server = getMessage("server");
         databaseManager = new DatabaseManager(this);
         playerManager = new PlayerManager(this);
         try{
-            if(databaseManager.initDatabaseTable1() && databaseManager.initDatabaseTable2() == false){
-                getLogger().severe("Error creating homes table!");
+            if(databaseManager.initDatabaseTable1() && databaseManager.initDatabaseTable2() && databaseManager.initDatabaseTable3() == false){
+                getLogger().severe("Error creating tables!");
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -40,6 +49,7 @@ public final class AxTravel extends JavaPlugin {
         getCommand("warp").setExecutor(new WarpCommand(this));
         getCommand("warps").setExecutor(new WarpsCommand(this));
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
     }
 
     @Override
@@ -49,5 +59,17 @@ public final class AxTravel extends JavaPlugin {
 
     public boolean isSpawnOnJoin(){
         return getConfig().getBoolean("spawnOnJoin", true);
+    }
+
+    public void createLangFile(){
+        serverFile = new File(getDataFolder(), "server.yml");
+        if(!serverFile.exists()){
+            saveResource("server.yml", false);
+        }
+        serverFileConfig = YamlConfiguration.loadConfiguration(serverFile);
+    }
+
+    public String getMessage(String path){
+        return serverFileConfig.getString(path);
     }
 }

@@ -2,6 +2,7 @@
 >Minecraft plugin that allows players to teleport, set homes and set warps
 ---
 ## Features
+- Cross-server functionality
 - Commands
   - Home
   - Homes
@@ -32,6 +33,10 @@ database:
   database: axtravel
   username: root
   password:
+```
+```
+# server.yml
+server: server
 ```
 ---
 ## Support

@@ -37,7 +37,7 @@ public class DatabaseManager {
 
     public boolean initDatabaseTable1(){
         try(Connection conn = getConnection()){
-            try(PreparedStatement ps = conn.prepareStatement("CREATE TABLE IF NOT EXISTS homes(uuid VARCHAR(255), world VARCHAR(255), x DOUBLE, y DOUBLE, z DOUBLE, pitch FLOAT, yaw FLOAT, name VARCHAR(255), name VARCHAR(255) PRIMARY KEY)")){
+            try(PreparedStatement ps = conn.prepareStatement("CREATE TABLE IF NOT EXISTS homes(uuid VARCHAR(255), server VARCHAR(255), world VARCHAR(255), x DOUBLE, y DOUBLE, z DOUBLE, pitch FLOAT, yaw FLOAT, name VARCHAR(255) PRIMARY KEY)")){
                 ps.executeUpdate();
                 return true;
             }
@@ -48,7 +48,18 @@ public class DatabaseManager {
 
     public boolean initDatabaseTable2(){
         try(Connection conn = getConnection()){
-            try(PreparedStatement ps = conn.prepareStatement("CREATE TABLE IF NOT EXISTS warps(uuid VARCHAR(255), world VARCHAR(255), x DOUBLE, y DOUBLE, z DOUBLE, pitch FLOAT, yaw FLOAT, name VARCHAR(255), name VARCHAR(255) PRIMARY KEY)")){
+            try(PreparedStatement ps = conn.prepareStatement("CREATE TABLE IF NOT EXISTS warps(uuid VARCHAR(255), server VARCHAR(255), world VARCHAR(255), x DOUBLE, y DOUBLE, z DOUBLE, pitch FLOAT, yaw FLOAT, name VARCHAR(255) PRIMARY KEY)")){
+                ps.executeUpdate();
+                return true;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean initDatabaseTable3(){
+        try(Connection conn = getConnection()){
+            try(PreparedStatement ps = conn.prepareStatement("CREATE TABLE IF NOT EXISTS pending_teleports(uuid VARCHAR(255) PRIMARY KEY, target VARCHAR(255), world VARCHAR(255), x DOUBLE, y DOUBLE, z DOUBLE, yaw FLOAT, pitch FLOAT)")){
                 ps.executeUpdate();
                 return true;
             }
