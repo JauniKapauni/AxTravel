@@ -23,5 +23,9 @@ public class PlayerJoinListener implements Listener {
             p.sendMessage(ChatColor.GREEN + "You were teleported to the spawn!");
             reference.getPlayerManager().checkForPending(p);
         }
+        String[] tpaRequest = reference.getPlayerManager().getTpaRequest(p.getName());
+        if(tpaRequest != null){
+            p.sendMessage(ChatColor.YELLOW + tpaRequest[1] + " wants to teleport to you! Use /tpaceept or /tpdeny");
+        }
     }
 }

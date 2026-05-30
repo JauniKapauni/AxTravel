@@ -251,4 +251,66 @@ public class PlayerManager {
         }
         return new String[0];
     }
+
+    public void saveTpaRequest(UUID requesterUUID, String requesterName, String targetName){
+        try(Connection conn = reference.getDatabaseManager().getConnection()){
+            try(PreparedStatement delete = conn.prepareStatement("DELETE FROM tpa_requests WHERE target_name = ?")){
+                delete.setString(1, targetName);
+                delete.executeUpdate();
+            }
+            try(PreparedStatement ps = conn.prepareStatement("INSERT INTO tpa_requests(requester_uuid, requester_name, target_name) VALUES(?,?,?)")){
+                ps.setString(1, requesterUUID.toString());
+                ps.setString(2, requesterName);
+                ps.setString(3, targetName);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String[] getTpaRequest(String targetName){
+        try(Connection conn = reference.getDatabaseManager().getConnection()){
+            try(PreparedStatement ps = conn.prepareStatement("SELECT * FROM tpa_requests WHERE target_name = ?")){
+                ps.setString(1, targetName);
+                ResultSet rs = ps.executeQuery();
+                if(rs.next()){
+                    return new String[]{
+                            rs.getString("requester_uuid"),
+                            rs.getString("requester_name")
+                    };
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    public void deleteTpaRequest(String targetName){
+        try(Connection conn = reference.getDatabaseManager().getConnection()){
+            try(PreparedStatement ps = conn.prepareStatement("DELETE FROM tpa_requests WHERE target_name = ?")){
+                ps.setString(1, targetName);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void connectOtherToServer(Player sender, String playerName, String server){
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("ConnectOther");
+        out.writeUTF(playerName);
+        out.writeUTF(server);
+        sender.sendPluginMessage(reference, "BungeeCord", out.toByteArray());
+    }
+
+    public void sendMessageToPlayer(Player sender, String targetName, String message){
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("Message");
+        out.writeUTF(targetName);
+        out.writeUTF(message);
+        sender.sendPluginMessage(reference, "BungeeCord", out.toByteArray());
+    }
 }

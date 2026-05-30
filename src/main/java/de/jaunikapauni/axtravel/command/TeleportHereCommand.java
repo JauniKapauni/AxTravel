@@ -26,7 +26,7 @@ public class TeleportHereCommand implements CommandExecutor {
             return false;
         }
         Player p = (Player) sender;
-        Player target = Bukkit.getPlayer(args[0]);
+        Player target = Bukkit.getPlayerExact(args[0]);
         target.teleport(p.getLocation());
         target.sendMessage(ChatColor.GREEN + "You were teleported to " + p.getName());
         p.sendMessage(ChatColor.GREEN + target.getName() + " was teleported to you");

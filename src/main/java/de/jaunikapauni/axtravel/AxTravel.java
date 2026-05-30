@@ -32,7 +32,7 @@ public final class AxTravel extends JavaPlugin {
         databaseManager = new DatabaseManager(this);
         playerManager = new PlayerManager(this);
         try{
-            if(databaseManager.initDatabaseTable1() && databaseManager.initDatabaseTable2() && databaseManager.initDatabaseTable3() == false){
+            if(databaseManager.initDatabaseTable1() && databaseManager.initDatabaseTable2() && databaseManager.initDatabaseTable3() && databaseManager.initDatabaseTable4() == false){
                 getLogger().severe("Error creating tables!");
             }
         } catch (Exception e) {
@@ -50,6 +50,9 @@ public final class AxTravel extends JavaPlugin {
         getCommand("warps").setExecutor(new WarpsCommand(this));
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        getCommand("tpa").setExecutor(new TpaCommand(this));
+        getCommand("tpaccept").setExecutor(new TpAcceptCommand(this));
+        getCommand("tpdeny").setExecutor(new TpDenyCommand(this));
     }
 
     @Override

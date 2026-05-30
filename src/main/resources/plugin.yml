@@ -21,3 +21,6 @@ commands:
   tphere:
   warp:
   warps:
+  tpa:
+  tpaccept:
+  tpdeny:

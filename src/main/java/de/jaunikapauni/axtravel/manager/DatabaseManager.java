@@ -67,4 +67,15 @@ public class DatabaseManager {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean initDatabaseTable4(){
+        try(Connection conn = getConnection()){
+            try(PreparedStatement ps = conn.prepareStatement("CREATE TABLE IF NOT EXISTS tpa_requests(requester_uuid VARCHAR(255), requester_name VARCHAR(255), target_name VARCHAR(255) PRIMARY KEY)")){
+                ps.executeUpdate();
+                return true;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
