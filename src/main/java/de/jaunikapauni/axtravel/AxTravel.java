@@ -40,6 +40,7 @@ public final class AxTravel extends JavaPlugin {
             throw new RuntimeException(e);
         }
         getCommand("home").setExecutor(new HomeCommand(this));
+        getCommand("home").setTabCompleter(new HomeTabCompleter(this));
         getCommand("homes").setExecutor(new HomesCommand(this));
         getCommand("sethome").setExecutor(new SetHomeCommand(this));
         getCommand("setspawn").setExecutor(new SetSpawnCommand(this));

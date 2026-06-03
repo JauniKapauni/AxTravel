@@ -355,4 +355,20 @@ public class PlayerManager {
         }
         return list;
     }
+
+    public List<String> getHomeNames(Player p) {
+        List<String> list = new ArrayList<>();
+        try(Connection conn = reference.getDatabaseManager().getConnection()){
+            try(PreparedStatement ps = conn.prepareStatement("SELECT * FROM homes WHERE uuid = ?")){
+                ps.setString(1, p.getUniqueId().toString());
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()){
+                    list.add(rs.getString("name"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
 }
