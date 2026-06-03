@@ -78,4 +78,15 @@ public class DatabaseManager {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean initDatabaseTable5(){
+        try(Connection conn = getConnection()){
+            try(PreparedStatement ps = conn.prepareStatement("CREATE TABLE IF NOT EXISTS online_players(uuid VARCHAR(255) PRIMARY KEY, name VARCHAR(255), server VARCHAR(255), online BOOLEAN)")){
+                ps.executeUpdate();
+                return true;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

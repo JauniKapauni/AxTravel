@@ -2,6 +2,7 @@ package de.jaunikapauni.axtravel;
 
 import de.jaunikapauni.axtravel.command.*;
 import de.jaunikapauni.axtravel.listener.PlayerJoinListener;
+import de.jaunikapauni.axtravel.listener.PlayerQuitListener;
 import de.jaunikapauni.axtravel.manager.DatabaseManager;
 import de.jaunikapauni.axtravel.manager.PlayerManager;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -32,7 +33,7 @@ public final class AxTravel extends JavaPlugin {
         databaseManager = new DatabaseManager(this);
         playerManager = new PlayerManager(this);
         try{
-            if(databaseManager.initDatabaseTable1() && databaseManager.initDatabaseTable2() && databaseManager.initDatabaseTable3() && databaseManager.initDatabaseTable4() == false){
+            if(databaseManager.initDatabaseTable1() && databaseManager.initDatabaseTable2() && databaseManager.initDatabaseTable3() && databaseManager.initDatabaseTable4() && databaseManager.initDatabaseTable5() == false){
                 getLogger().severe("Error creating tables!");
             }
         } catch (Exception e) {
@@ -49,8 +50,10 @@ public final class AxTravel extends JavaPlugin {
         getCommand("warp").setExecutor(new WarpCommand(this));
         getCommand("warps").setExecutor(new WarpsCommand(this));
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         getCommand("tpa").setExecutor(new TpaCommand(this));
+        getCommand("tpa").setTabCompleter(new TpaTabCompleter(this));
         getCommand("tpaccept").setExecutor(new TpAcceptCommand(this));
         getCommand("tpdeny").setExecutor(new TpDenyCommand(this));
     }

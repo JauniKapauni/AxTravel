@@ -27,5 +27,6 @@ public class PlayerJoinListener implements Listener {
         if(tpaRequest != null){
             p.sendMessage(ChatColor.YELLOW + tpaRequest[1] + " wants to teleport to you! Use /tpaceept or /tpdeny");
         }
+        reference.getPlayerManager().updatePlayerStatus(p.getUniqueId(), p.getName(), reference.getMessage("server"), true);
     }
 }
