@@ -107,7 +107,6 @@ public class PlayerManager {
 
     public void warp(Player p, String name) {
         try (Connection conn = reference.getDatabaseManager().getConnection()) {
-            UUID uuid = p.getUniqueId();
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM warps WHERE name = ?");
             ps.setString(1, name);
             ResultSet rs = ps.executeQuery();
@@ -331,6 +330,21 @@ public class PlayerManager {
         List<String> list = new ArrayList<>();
         try(Connection conn = reference.getDatabaseManager().getConnection()){
             try(PreparedStatement ps = conn.prepareStatement("SELECT * FROM online_players WHERE online = TRUE")){
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()){
+                    list.add(rs.getString("name"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
+
+    public List<String> getWarpNames(){
+        List<String> list = new ArrayList<>();
+        try(Connection conn = reference.getDatabaseManager().getConnection()){
+            try(PreparedStatement ps = conn.prepareStatement("SELECT * FROM warps")){
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()){
                     list.add(rs.getString("name"));

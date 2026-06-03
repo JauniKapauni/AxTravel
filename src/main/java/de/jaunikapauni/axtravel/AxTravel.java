@@ -48,6 +48,7 @@ public final class AxTravel extends JavaPlugin {
         getCommand("tp").setExecutor(new TeleportCommand(this));
         getCommand("tphere").setExecutor(new TeleportHereCommand(this));
         getCommand("warp").setExecutor(new WarpCommand(this));
+        getCommand("warp").setTabCompleter(new WarpTabCompleter(this));
         getCommand("warps").setExecutor(new WarpsCommand(this));
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
