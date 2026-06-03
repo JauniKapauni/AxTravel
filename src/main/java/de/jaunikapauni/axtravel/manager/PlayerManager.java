@@ -129,9 +129,7 @@ public class PlayerManager {
 
     public void warps(Player p) {
         try (Connection conn = reference.getDatabaseManager().getConnection()) {
-            UUID uuid = p.getUniqueId();
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM warps WHERE uuid = ?");
-            ps.setString(1, uuid.toString());
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM warps");
             ResultSet rs = ps.executeQuery();
             p.sendMessage("Warps:");
             while (rs.next()) {
