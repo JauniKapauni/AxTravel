@@ -371,4 +371,16 @@ public class PlayerManager {
         }
         return list;
     }
+
+    public void delHome(Player p, String name){
+        try(Connection conn = reference.getDatabaseManager().getConnection()){
+            try(PreparedStatement ps = conn.prepareStatement("DELETE FROM homes WHERE uuid = ? and name = ?")){
+                ps.setString(1, p.getUniqueId().toString());
+                ps.setString(2, name);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
