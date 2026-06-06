@@ -20,6 +20,7 @@ public class DelHomeCommand implements CommandExecutor {
         }
         Player p = (Player) sender;
         reference.getPlayerManager().delHome(p, args[0]);
+        p.sendMessage("Your home " + args[0] + " was successfully deleted!");
         return true;
     }
 }
