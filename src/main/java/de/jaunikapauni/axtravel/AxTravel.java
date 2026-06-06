@@ -60,7 +60,9 @@ public final class AxTravel extends JavaPlugin {
         getCommand("tpdeny").setExecutor(new TpDenyCommand(this));
 
         getCommand("delhome").setExecutor(new DelHomeCommand(this));
+        getCommand("delhome").setTabCompleter(new DelHomeTabCompleter(this));
         getCommand("delwarp").setExecutor(new DelWarpCommand(this));
+        getCommand("delwarp").setTabCompleter(new DelWarpTabCompleter(this));
         getLogger().info("");
         getLogger().info("----------------------------------------");
         getLogger().info("Name: " + getName());
