@@ -383,4 +383,15 @@ public class PlayerManager {
             throw new RuntimeException(e);
         }
     }
+
+    public void delWarp(String name){
+        try(Connection conn = reference.getDatabaseManager().getConnection()){
+            try(PreparedStatement ps = conn.prepareStatement("DELETE FROM warps WHERE name = ?")){
+                ps.setString(1, name);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
