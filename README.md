@@ -1,6 +1,10 @@
 # AxTravel
 >Minecraft plugin that allows players to teleport, set homes and set warps
 ---
+## Requirements
+- Minecraft Paper 26.1.2 Server
+- MariaDB / MySQL Server
+---
 ## Features
 - Cross-server functionality
 - Commands
