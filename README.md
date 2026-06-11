@@ -43,6 +43,22 @@ database:
 server: server
 ```
 ---
+## Commands & Permissions
+- `/delhome` - `axtravel.delhome`
+- `/delwarp` - `axtravel.delwarp`
+- `/home` - `axtravel.home`
+- `/homes` - `axtravel.homes`
+- `/sethome` - `axtravel.sethome`
+- `/setspawn` - `axtravel.setspawn`
+- `/setwarp` - `axtravel.setwarp`
+- `/spawn` - `axtravel.spawn`
+- `/tp` - `axtravel.teleport`
+- `/tphere` - `axtravel.teleporthere`
+- `/tpaccept` - `axtravel.tpaccept`
+- `/tpa` - `axtravel.tpa`
+- `/tpdeny` - `axtravel.tpdeny`
+- `/warp` - `axtravel.warp`
+- `/warps` - `axtravel.warps`
 ## Support
 Discord: [AxForge](https://discord.gg/rYSxV4daS8)
 ---
