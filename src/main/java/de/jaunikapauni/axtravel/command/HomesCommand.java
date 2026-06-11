@@ -27,6 +27,10 @@ public class HomesCommand implements CommandExecutor {
             return true;
         }
         Player p = (Player) sender;
+        if(!p.hasPermission("axtravel.homes")){
+            p.sendMessage("You don't have the permission! [axtravel.homes]");
+            return true;
+        }
         reference.getPlayerManager().homes(p);
         return true;
     }

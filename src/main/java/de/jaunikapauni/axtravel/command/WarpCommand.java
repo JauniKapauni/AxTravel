@@ -29,6 +29,10 @@ public class WarpCommand implements CommandExecutor {
             return true;
         }
         Player p = (Player) sender;
+        if(!p.hasPermission("axtravel.warp")){
+            p.sendMessage("You don't have the permission! [axtravel.warp]");
+            return true;
+        }
         String targetServer = reference.getPlayerManager().getWarp(p, args[0])[0];
         if(reference.getMessage("server").equals(targetServer)){
             reference.getPlayerManager().warp(p, args[0]);

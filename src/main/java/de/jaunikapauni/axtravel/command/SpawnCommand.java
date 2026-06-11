@@ -22,6 +22,10 @@ public class SpawnCommand implements CommandExecutor {
             return true;
         }
         Player p = (Player) sender;
+        if(!p.hasPermission("axtravel.spawn")){
+            p.sendMessage("You don't have the permission! [axtravel.spawn]");
+            return true;
+        }
         Location spawn = p.getWorld().getSpawnLocation();
         p.teleport(spawn);
         p.sendMessage(ChatColor.GREEN + "You were teleported to the spawn!");

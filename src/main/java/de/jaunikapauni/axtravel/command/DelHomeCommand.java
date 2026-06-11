@@ -19,6 +19,10 @@ public class DelHomeCommand implements CommandExecutor {
             return true;
         }
         Player p = (Player) sender;
+        if(!p.hasPermission("axtravel.delhome")){
+            p.sendMessage("You don't have the permission! [axtravel.delhome]");
+            return true;
+        }
         reference.getPlayerManager().delHome(p, args[0]);
         p.sendMessage("Your home " + args[0] + " was successfully deleted!");
         return true;

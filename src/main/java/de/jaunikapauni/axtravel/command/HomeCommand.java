@@ -29,6 +29,10 @@ public class HomeCommand implements CommandExecutor {
             return true;
         }
         Player p = (Player) sender;
+        if(!p.hasPermission("axtravel.home")){
+            p.sendMessage("You don't have the permission! [axtravel.home]");
+            return true;
+        }
         String targetServer = reference.getPlayerManager().getHome(p, args[0])[0];
         if(reference.getMessage("server").equals(targetServer)){
             reference.getPlayerManager().home(p, args[0]);

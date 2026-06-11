@@ -25,6 +25,10 @@ public class WarpsCommand implements CommandExecutor {
             return true;
         }
         Player p = (Player) sender;
+        if(!p.hasPermission("axtravel.warps")){
+            p.sendMessage("You don't have the permission! [axtravel.warps]");
+            return true;
+        }
         reference.getPlayerManager().warps(p);
         return true;
     }

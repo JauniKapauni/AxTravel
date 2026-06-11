@@ -19,6 +19,10 @@ public class DelWarpCommand implements CommandExecutor {
             return true;
         }
         Player p = (Player) sender;
+        if(!p.hasPermission("axtravel.delwarp")){
+            p.sendMessage("You don't have the permission! [axtravel.delwarp]");
+            return true;
+        }
         reference.getPlayerManager().delWarp(args[0]);
         p.sendMessage("The warp " + args[0] + " was deleted");
         return true;

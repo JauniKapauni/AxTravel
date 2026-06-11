@@ -21,6 +21,10 @@ public class TpaCommand implements CommandExecutor {
             return true;
         }
         Player p = (Player) sender;
+        if(!p.hasPermission("axtravel.tpa")){
+            p.sendMessage("You don't have the permission! [axtravel.tpa]");
+            return true;
+        }
         reference.getPlayerManager().saveTpaRequest(p.getUniqueId(), p.getName(), args[0]);
         Player target = Bukkit.getPlayerExact(args[0]);
         if(target != null){

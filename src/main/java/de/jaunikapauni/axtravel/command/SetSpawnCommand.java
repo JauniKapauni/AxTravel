@@ -22,6 +22,10 @@ public class SetSpawnCommand implements CommandExecutor {
             return true;
         }
         Player p = (Player) sender;
+        if(!p.hasPermission("axtravel.setspawn")){
+            p.sendMessage("You don't have the permission! [axtravel.setspawn]");
+            return true;
+        }
         Location loc = p.getLocation();
         p.getWorld().setSpawnLocation(loc);
         p.sendMessage(ChatColor.GREEN + "The spawb was changed to " + loc);

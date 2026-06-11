@@ -23,6 +23,10 @@ public class TpAcceptCommand implements CommandExecutor {
             return true;
         }
         Player p = (Player) sender;
+        if(!p.hasPermission("axtravel.tpaccept")){
+            p.sendMessage("You don't have the permission! [axtravel.tpaccept]");
+            return true;
+        }
         String[] request = reference.getPlayerManager().getTpaRequest(p.getName());
         if(request == null){
             p.sendMessage(ChatColor.RED + "No pending teleport requests!");

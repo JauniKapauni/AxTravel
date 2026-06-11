@@ -27,6 +27,10 @@ public class SetWarpCommand implements CommandExecutor {
             return true;
         }
         Player p = (Player) sender;
+        if(!p.hasPermission("axtravel.setwarp")){
+            p.sendMessage("You don't have the permission! [axtravel.setwarp]");
+            return true;
+        }
         Location loc = Bukkit.getServer().getPlayer(p.getUniqueId()).getLocation();
         reference.getPlayerManager().setWarp(p, loc, args[0]);
         return true;
