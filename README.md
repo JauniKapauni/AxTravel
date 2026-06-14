@@ -59,8 +59,10 @@ server: server
 - `/tpdeny` - `axtravel.tpdeny`
 - `/warp` - `axtravel.warp`
 - `/warps` - `axtravel.warps`
+---
 ## Support
 Discord: [AxForge](https://discord.gg/rYSxV4daS8)
+
 ---
 ## License
 AxTravel is licensed under the permissive MIT License. Please see [LICENSE](https://github.com/JauniKapauni/AxTravel/blob/master/LICENSE) for more info.
