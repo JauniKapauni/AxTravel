@@ -4,17 +4,17 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import de.jaunikapauni.axtravel.AxTravel;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerManager {
     AxTravel reference;
@@ -22,6 +22,8 @@ public class PlayerManager {
     public PlayerManager(AxTravel reference) {
         this.reference = reference;
     }
+
+    Map<String, BukkitTask> tpaExpireTasks = new HashMap<>();
 
     public void home(Player p, String name) {
         try (Connection conn = reference.getDatabaseManager().getConnection()) {
@@ -251,6 +253,8 @@ public class PlayerManager {
     }
 
     public void saveTpaRequest(UUID requesterUUID, String requesterName, String targetName){
+        BukkitTask existing = tpaExpireTasks.remove(targetName);
+        if(existing != null) existing.cancel();
         try(Connection conn = reference.getDatabaseManager().getConnection()){
             try(PreparedStatement delete = conn.prepareStatement("DELETE FROM tpa_requests WHERE target_name = ?")){
                 delete.setString(1, targetName);
@@ -265,6 +269,8 @@ public class PlayerManager {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        BukkitTask task = Bukkit.getScheduler().runTaskLater(reference, () -> expireTpaRequest(targetName, requesterName, requesterUUID), 6000L);
+        tpaExpireTasks.put(targetName, task);
     }
 
     public String[] getTpaRequest(String targetName){
@@ -286,6 +292,8 @@ public class PlayerManager {
     }
 
     public void deleteTpaRequest(String targetName){
+        BukkitTask task = tpaExpireTasks.remove(targetName);
+        if(task != null) task.cancel();
         try(Connection conn = reference.getDatabaseManager().getConnection()){
             try(PreparedStatement ps = conn.prepareStatement("DELETE FROM tpa_requests WHERE target_name = ?")){
                 ps.setString(1, targetName);
@@ -294,6 +302,24 @@ public class PlayerManager {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void expireTpaRequest(String targetName, String requesterName, UUID requesterUUID){
+        tpaExpireTasks.remove(targetName);
+        String[] request = getTpaRequest(targetName);
+        if(request == null || !request[0].equals(requesterUUID.toString())) return;
+        try(Connection conn = reference.getDatabaseManager().getConnection()){
+            try(PreparedStatement ps = conn.prepareStatement("DELETE FROM tpa_requests WHERE target_name = ?")){
+                ps.setString(1, targetName);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        Player requester = Bukkit.getPlayer(requesterUUID);
+        if(requester != null) requester.sendMessage(ChatColor.RED + "Your teleport request to " + targetName + " expired!");
+        Player target = Bukkit.getPlayerExact(targetName);
+        if(target != null) target.sendMessage(ChatColor.RED + "Teleport request from " + requesterName + " expired!");
     }
 
     public void connectOtherToServer(Player sender, String playerName, String server){
