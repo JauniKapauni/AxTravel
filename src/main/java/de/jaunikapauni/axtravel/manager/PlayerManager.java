@@ -269,7 +269,7 @@ public class PlayerManager {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        BukkitTask task = Bukkit.getScheduler().runTaskLater(reference, () -> expireTpaRequest(targetName, requesterName, requesterUUID), 6000L);
+        BukkitTask task = Bukkit.getScheduler().runTaskLater(reference, () -> expireTpaRequest(targetName, requesterName, requesterUUID), 600L);
         tpaExpireTasks.put(targetName, task);
     }
 
