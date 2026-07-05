@@ -2,6 +2,7 @@ package de.jaunikapauni.axtravel.command;
 
 import de.jaunikapauni.axtravel.AxTravel;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -27,6 +28,10 @@ public class WarpCommand implements CommandExecutor {
         if(!(sender instanceof Player)){
             sender.sendMessage("Only players can run this command!");
             return true;
+        }
+        if(args.length == 0){
+            sender.sendMessage(ChatColor.RED + "Please enter a warp name!");
+            return false;
         }
         Player p = (Player) sender;
         if(!p.hasPermission("axtravel.warp")){
