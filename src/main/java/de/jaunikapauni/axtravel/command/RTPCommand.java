@@ -26,7 +26,7 @@ public class RTPCommand implements CommandExecutor {
         }
         Player p = (Player) sender;
         Random random = new Random();
-        int radius = 5000;
+        int radius = reference.getConfig().getInt("radiusOfRTP");
         int x = random.nextInt(radius * 2 + 1) - radius;
         int z = random.nextInt(radius * 2 + 1) - radius;
         World world = p.getWorld();

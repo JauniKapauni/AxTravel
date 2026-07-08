@@ -5,3 +5,4 @@ database:
   username: root
   password:
 spawnOnJoin: true
+radiusOfRTP: 5000
