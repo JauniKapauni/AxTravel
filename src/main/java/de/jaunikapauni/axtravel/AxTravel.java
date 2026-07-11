@@ -64,6 +64,7 @@ public final class AxTravel extends JavaPlugin {
         getCommand("delwarp").setExecutor(new DelWarpCommand(this));
         getCommand("delwarp").setTabCompleter(new DelWarpTabCompleter(this));
         getCommand("rtp").setExecutor(new RTPCommand(this));
+        getCommand("tppos").setExecutor(new TpPosCommand(this));
         getLogger().info("");
         getLogger().info("----------------------------------------");
         getLogger().info("Name: " + getName());
