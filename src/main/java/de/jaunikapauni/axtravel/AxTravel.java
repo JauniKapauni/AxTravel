@@ -3,6 +3,7 @@ package de.jaunikapauni.axtravel;
 import de.jaunikapauni.axtravel.command.*;
 import de.jaunikapauni.axtravel.listener.PlayerJoinListener;
 import de.jaunikapauni.axtravel.listener.PlayerQuitListener;
+import de.jaunikapauni.axtravel.listener.PlayerRespawnListener;
 import de.jaunikapauni.axtravel.manager.DatabaseManager;
 import de.jaunikapauni.axtravel.manager.PlayerManager;
 import org.bukkit.Bukkit;
@@ -68,6 +69,7 @@ public final class AxTravel extends JavaPlugin {
         getCommand("delwarp").setTabCompleter(new DelWarpTabCompleter(this));
         getCommand("rtp").setExecutor(new RTPCommand(this));
         getCommand("tppos").setExecutor(new TpPosCommand(this));
+        getServer().getPluginManager().registerEvents(new PlayerRespawnListener(this), this);
         getLogger().info("");
         getLogger().info("----------------------------------------");
         getLogger().info("Name: " + getName());
