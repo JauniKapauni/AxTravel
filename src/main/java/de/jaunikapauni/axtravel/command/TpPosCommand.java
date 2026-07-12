@@ -26,10 +26,10 @@ public class TpPosCommand implements CommandExecutor {
             p.sendMessage("You don't have the permission! [axtravel.tppos]");
             return true;
         }
-        if(args.length < 3){
+        if(args.length < 5){
             return false;
         }
-        Location loc = new Location(p.getWorld(), Double.valueOf(args[0]), Double.valueOf(args[1]), Double.valueOf(args[2]));
+        Location loc = new Location(p.getWorld(), Double.valueOf(args[0]), Double.valueOf(args[1]), Double.valueOf(args[2]), Float.valueOf(args[3]), Float.valueOf(args[4]));
         p.teleport(loc);
         p.sendMessage("You got teleported!");
         return true;
