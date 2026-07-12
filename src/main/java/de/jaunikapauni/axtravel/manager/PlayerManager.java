@@ -33,7 +33,7 @@ public class PlayerManager {
             ps.setString(2, name);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                World world = Bukkit.getWorld("world");
+                World world = Bukkit.getWorld(rs.getString("world"));
                 double x = rs.getDouble("x");
                 double y = rs.getDouble("y");
                 double z = rs.getDouble("z");
@@ -113,7 +113,7 @@ public class PlayerManager {
             ps.setString(1, name);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                World world = Bukkit.getWorld("world");
+                World world = Bukkit.getWorld(rs.getString("world"));
                 double x = rs.getDouble("x");
                 double y = rs.getDouble("y");
                 double z = rs.getDouble("z");
