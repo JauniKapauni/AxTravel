@@ -27,7 +27,13 @@ public class SetSpawnCommand implements CommandExecutor {
             return true;
         }
         Location loc = p.getLocation();
-        p.getWorld().setSpawnLocation(loc);
+        reference.getConfig().set("spawn.world", loc.getWorld().getName());
+        reference.getConfig().set("spawn.x", loc.getX());
+        reference.getConfig().set("spawn.y", loc.getY());
+        reference.getConfig().set("spawn.z", loc.getZ());
+        reference.getConfig().set("spawn.yaw", loc.getYaw());
+        reference.getConfig().set("spawn.pitch", loc.getPitch());
+        reference.saveConfig();
         p.sendMessage(ChatColor.GREEN + "The spawb was changed to " + loc);
         return true;
     }

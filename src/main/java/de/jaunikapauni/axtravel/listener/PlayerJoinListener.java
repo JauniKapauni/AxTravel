@@ -18,7 +18,7 @@ public class PlayerJoinListener implements Listener {
     public void onJoin(PlayerJoinEvent e){
         Player p = e.getPlayer();
         if(reference.isSpawnOnJoin()){
-            Location spawn = p.getWorld().getSpawnLocation();
+            Location spawn = reference.getSpawnLocation();
             p.teleport(spawn);
             p.sendMessage(ChatColor.GREEN + "You were teleported to the spawn!");
             reference.getPlayerManager().checkForPending(p);

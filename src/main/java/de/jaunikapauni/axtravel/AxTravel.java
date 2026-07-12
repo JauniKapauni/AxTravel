@@ -5,6 +5,9 @@ import de.jaunikapauni.axtravel.listener.PlayerJoinListener;
 import de.jaunikapauni.axtravel.listener.PlayerQuitListener;
 import de.jaunikapauni.axtravel.manager.DatabaseManager;
 import de.jaunikapauni.axtravel.manager.PlayerManager;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -94,5 +97,18 @@ public final class AxTravel extends JavaPlugin {
 
     public String getMessage(String path){
         return serverFileConfig.getString(path);
+    }
+
+    public Location getSpawnLocation(){
+        String worldName = getConfig().getString("spawn.world");
+        World world = Bukkit.getWorld(worldName);
+        return new Location(
+                world,
+                getConfig().getDouble("spawn.x"),
+                getConfig().getDouble("spawn.y"),
+                getConfig().getDouble("spawn.z"),
+                (float) getConfig().getDouble("spawn.yaw"),
+                (float) getConfig().getDouble("spawn.pitch")
+        );
     }
 }
