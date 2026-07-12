@@ -1,6 +1,7 @@
 package de.jaunikapauni.axtravel.command;
 
 import de.jaunikapauni.axtravel.AxTravel;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -29,7 +30,7 @@ public class RTPCommand implements CommandExecutor {
         int radius = reference.getConfig().getInt("radiusOfRTP");
         int x = random.nextInt(radius * 2 + 1) - radius;
         int z = random.nextInt(radius * 2 + 1) - radius;
-        World world = p.getWorld();
+        World world = Bukkit.getWorld(args[1]);
         int y = world.getHighestBlockYAt(x, z);
         Location loc = new Location(world, x + 0.5, y, z + 0.5);
         p.teleport(loc);
