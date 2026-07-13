@@ -14,10 +14,16 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 
 public final class AxTravel extends JavaPlugin {
     File serverFile;
     FileConfiguration serverFileConfig;
+    public FileConfiguration getRtpsFileConfig(){
+        return rtpsFileConfig;
+    }
+    File rtpsFile;
+    FileConfiguration rtpsFileConfig;
     String server;
     DatabaseManager databaseManager;
     public DatabaseManager getDatabaseManager(){
@@ -33,6 +39,7 @@ public final class AxTravel extends JavaPlugin {
         // Plugin startup logic
         saveDefaultConfig();
         createLangFile();
+        createRtpConfig();
         server = getMessage("server");
         databaseManager = new DatabaseManager(this);
         playerManager = new PlayerManager(this);
@@ -112,5 +119,30 @@ public final class AxTravel extends JavaPlugin {
                 (float) getConfig().getDouble("spawn.yaw"),
                 (float) getConfig().getDouble("spawn.pitch")
         );
+    }
+
+    public void createRtpConfig(){
+        rtpsFile = new File(getDataFolder(), "rtps.yml");
+        if(!rtpsFile.exists()){
+            rtpsFile.getParentFile().mkdirs();
+            try{
+                rtpsFile.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        rtpsFileConfig = YamlConfiguration.loadConfiguration(rtpsFile);
+        for(World w : Bukkit.getWorlds()){
+            String path = "rtps." + w.getName();
+            if(!rtpsFileConfig.contains(path)){
+                rtpsFileConfig.set(path + ".minY", 0);
+                rtpsFileConfig.set(path + ".maxY", 120);
+            }
+        }
+        try{
+            rtpsFileConfig.save(rtpsFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

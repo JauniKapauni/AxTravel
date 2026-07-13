@@ -42,8 +42,9 @@ public class RTPCommand implements CommandExecutor {
     }
 
     Location getSafeLocation(World world, int x, int z){
-        int minY = world.getMinHeight();
-        int maxY = world.getMaxHeight();
+        String path = "rtps." + world.getName();
+        int minY = reference.getRtpsFileConfig().getInt(path + ".minY");
+        int maxY = reference.getRtpsFileConfig().getInt(path + ".maxY");
         if(world.getEnvironment() == World.Environment.NETHER){
             maxY = 120;
         }
