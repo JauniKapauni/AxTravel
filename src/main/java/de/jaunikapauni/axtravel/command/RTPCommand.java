@@ -44,7 +44,10 @@ public class RTPCommand implements CommandExecutor {
     Location getSafeLocation(World world, int x, int z){
         int minY = world.getMinHeight();
         int maxY = world.getMaxHeight();
-        for(int y = maxY -2; y > minY; y--){
+        if(world.getEnvironment() == World.Environment.NETHER){
+            maxY = 120;
+        }
+        for(int y = maxY - 2; y > minY; y--){
             Location loc = new Location(world, x + 0.5, y, z + 0.5);
             if(loc.getBlock().getType().isAir() && loc.clone().add(0, 1, 0).getBlock().getType().isAir() && loc.clone().subtract(0, 1, 0).getBlock().getType().isSolid()){
                 return loc;
