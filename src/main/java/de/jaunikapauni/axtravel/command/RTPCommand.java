@@ -31,10 +31,25 @@ public class RTPCommand implements CommandExecutor {
         int x = random.nextInt(radius * 2 + 1) - radius;
         int z = random.nextInt(radius * 2 + 1) - radius;
         World world = Bukkit.getWorld(args[0]);
-        int y = world.getHighestBlockYAt(x, z);
-        Location loc = new Location(world, x + 0.5, y, z + 0.5);
+        Location loc = getSafeLocation(world, x, z);
+        if(loc == null){
+            p.sendMessage(ChatColor.RED + "No safe location found!");
+            return true;
+        }
         p.teleport(loc);
         p.sendMessage(ChatColor.GREEN + "You were teleported to a random location!");
         return true;
+    }
+
+    Location getSafeLocation(World world, int x, int z){
+        int minY = world.getMinHeight();
+        int maxY = world.getMaxHeight();
+        for(int y = maxY -2; y > minY; y--){
+            Location loc = new Location(world, x + 0.5, y, z + 0.5);
+            if(loc.getBlock().getType().isAir() && loc.clone().add(0, 1, 0).getBlock().getType().isAir() && loc.clone().subtract(0, 1, 0).getBlock().getType().isSolid()){
+                return loc;
+            }
+        }
+        return null;
     }
 }
