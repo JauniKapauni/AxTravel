@@ -26,15 +26,18 @@ public class RTPCommand implements CommandExecutor {
             return true;
         }
         Player p = (Player) sender;
-        Random random = new Random();
-        int radius = reference.getConfig().getInt("radiusOfRTP");
-        int x = random.nextInt(radius * 2 + 1) - radius;
-        int z = random.nextInt(radius * 2 + 1) - radius;
         World world = Bukkit.getWorld(args[0]);
         reference.getPlayerManager().delayTeleport(p, () -> {
-            Location loc = getSafeLocation(world, x, z);
+            Random random = new Random();
+            int radius = reference.getConfig().getInt("radiusOfRTP");
+            Location loc = null;
+            for(int i = 0; i < 10 && loc == null; i++){
+                int x = random.nextInt(radius * 2 + 1) - radius;
+                int z = random.nextInt(radius * 2 + 1) - radius;
+                loc = getSafeLocation(world, x, z);
+            }
             if(loc == null){
-                p.sendMessage(ChatColor.RED + "No safe location found!");
+                p.sendMessage(ChatColor.RED + "No safe location found after 10 attempts! Please try again!");
                 return;
             }
             p.teleport(loc);
