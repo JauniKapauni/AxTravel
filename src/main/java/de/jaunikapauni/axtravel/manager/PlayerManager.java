@@ -432,7 +432,7 @@ public class PlayerManager {
                     cancel();
                     return;
                 }
-                if(p.getLocation().distanceSquared(start) > 1.0){
+                if(p.getLocation().distanceSquared(start) > 4.0){
                     p.sendActionBar(ChatColor.RED + "Teleport cancelled because you moved");
                     cancel();
                     return;
