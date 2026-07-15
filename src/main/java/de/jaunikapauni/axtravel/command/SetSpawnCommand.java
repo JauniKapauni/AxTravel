@@ -34,7 +34,7 @@ public class SetSpawnCommand implements CommandExecutor {
         reference.getConfig().set("spawn.yaw", loc.getYaw());
         reference.getConfig().set("spawn.pitch", loc.getPitch());
         reference.saveConfig();
-        p.sendMessage(ChatColor.GREEN + "The spawb was changed to " + loc);
+        p.sendMessage(ChatColor.GREEN + "The spawn was changed to " + loc);
         return true;
     }
 }
