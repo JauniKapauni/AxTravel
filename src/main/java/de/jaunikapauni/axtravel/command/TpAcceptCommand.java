@@ -32,19 +32,21 @@ public class TpAcceptCommand implements CommandExecutor {
             p.sendMessage(ChatColor.RED + "No pending teleport requests!");
             return true;
         }
-        UUID requesterUUID = UUID.fromString(request[0]);
-        String requesterName = request[1];
-        reference.getPlayerManager().deleteTpaRequest(p.getName());
-        Player requester = Bukkit.getPlayer(requesterUUID);
-        if(requester != null){
-            requester.teleport(p.getLocation());
-            requester.sendMessage(ChatColor.GREEN + p.getName() + " accepted your teleport request!");
-            p.sendMessage(ChatColor.GREEN + requesterName + " was teleported to you!");
-        } else {
-            reference.getPlayerManager().savePendingTeleport(requesterUUID, reference.getMessage("server"), p.getWorld().getName(), p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), p.getLocation().getYaw(), p.getLocation().getPitch());
-            reference.getPlayerManager().connectOtherToServer(p, requesterName, reference.getMessage("server"));
-            p.sendMessage(ChatColor.GREEN + "Teleport accepted! " + requesterName + " is being connected to this server!");
-        }
+        reference.getPlayerManager().delayTeleport(p, () -> {
+            UUID requesterUUID = UUID.fromString(request[0]);
+            String requesterName = request[1];
+            reference.getPlayerManager().deleteTpaRequest(p.getName());
+            Player requester = Bukkit.getPlayer(requesterUUID);
+            if(requester != null){
+                requester.teleport(p.getLocation());
+                requester.sendMessage(ChatColor.GREEN + p.getName() + " accepted your teleport request!");
+                p.sendMessage(ChatColor.GREEN + requesterName + " was teleported to you!");
+            } else {
+                reference.getPlayerManager().savePendingTeleport(requesterUUID, reference.getMessage("server"), p.getWorld().getName(), p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), p.getLocation().getYaw(), p.getLocation().getPitch());
+                reference.getPlayerManager().connectOtherToServer(p, requesterName, reference.getMessage("server"));
+                p.sendMessage(ChatColor.GREEN + "Teleport accepted! " + requesterName + " is being connected to this server!");
+            }
+        });
         return true;
     }
 }

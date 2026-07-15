@@ -38,14 +38,16 @@ public class HomeCommand implements CommandExecutor {
             p.sendMessage("You don't have the permission! [axtravel.home]");
             return true;
         }
-        String targetServer = reference.getPlayerManager().getHome(p, args[0])[0];
-        if(reference.getMessage("server").equals(targetServer)){
-            reference.getPlayerManager().home(p, args[0]);
-        } else {
-            String[] home = reference.getPlayerManager().getHome(p, args[0]);
-            reference.getPlayerManager().savePendingTeleport(p.getUniqueId(), home[0], home[1], Double.valueOf(home[2]), Double.valueOf(home[3]), Double.valueOf(home[4]), Float.valueOf(home[5]), Float.valueOf(home[6]));
-            reference.getPlayerManager().connectToServer(p, targetServer);
-        }
+        reference.getPlayerManager().delayTeleport(p, () -> {
+            String targetServer = reference.getPlayerManager().getHome(p, args[0])[0];
+            if(reference.getMessage("server").equals(targetServer)){
+                reference.getPlayerManager().home(p, args[0]);
+            } else {
+                String[] home = reference.getPlayerManager().getHome(p, args[0]);
+                reference.getPlayerManager().savePendingTeleport(p.getUniqueId(), home[0], home[1], Double.valueOf(home[2]), Double.valueOf(home[3]), Double.valueOf(home[4]), Float.valueOf(home[5]), Float.valueOf(home[6]));
+                reference.getPlayerManager().connectToServer(p, targetServer);
+            }
+        });
         return true;
     }
 }

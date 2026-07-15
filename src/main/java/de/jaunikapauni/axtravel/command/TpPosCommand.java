@@ -29,9 +29,11 @@ public class TpPosCommand implements CommandExecutor {
         if(args.length < 5){
             return false;
         }
-        Location loc = new Location(p.getWorld(), Double.valueOf(args[0]), Double.valueOf(args[1]), Double.valueOf(args[2]), Float.valueOf(args[3]), Float.valueOf(args[4]));
-        p.teleport(loc);
-        p.sendMessage("You got teleported!");
+        reference.getPlayerManager().delayTeleport(p, () -> {
+            Location loc = new Location(p.getWorld(), Double.valueOf(args[0]), Double.valueOf(args[1]), Double.valueOf(args[2]), Float.valueOf(args[3]), Float.valueOf(args[4]));
+            p.teleport(loc);
+            p.sendMessage("You got teleported!");
+        });
         return true;
     }
 }

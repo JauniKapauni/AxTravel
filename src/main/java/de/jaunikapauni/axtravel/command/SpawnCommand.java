@@ -26,9 +26,11 @@ public class SpawnCommand implements CommandExecutor {
             p.sendMessage("You don't have the permission! [axtravel.spawn]");
             return true;
         }
-        Location spawn = reference.getSpawnLocation();
-        p.teleport(spawn);
-        p.sendMessage(ChatColor.GREEN + "You were teleported to the spawn!");
+        reference.getPlayerManager().delayTeleport(p, () -> {
+            Location spawn = reference.getSpawnLocation();
+            p.teleport(spawn);
+            p.sendMessage(ChatColor.GREEN + "You were teleported to the spawn!");
+        });
         return true;
     }
 }

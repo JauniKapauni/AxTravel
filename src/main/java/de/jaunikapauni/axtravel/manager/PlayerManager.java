@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.Connection;
@@ -419,5 +420,32 @@ public class PlayerManager {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void delayTeleport(Player p, Runnable action){
+        new BukkitRunnable(){
+            int seconds = 3;
+            Location start = p.getLocation();
+            @Override
+            public void run(){
+                if(!p.isOnline()){
+                    cancel();
+                    return;
+                }
+                if(p.getLocation().distanceSquared(start) > 0.25){
+                    p.sendActionBar(ChatColor.RED + "Teleport cancelled because you moved");
+                    cancel();
+                    return;
+                }
+                if(seconds == 0){
+                    action.run();
+                    p.sendActionBar(ChatColor.GREEN + "Teleport");
+                    cancel();
+                    return;
+                }
+                p.sendActionBar(ChatColor.YELLOW + "Teleporting in " + seconds + "...");
+                seconds--;
+            }
+        }.runTaskTimer(reference, 0L, 20L);
     }
 }

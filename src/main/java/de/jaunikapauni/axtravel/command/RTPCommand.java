@@ -31,13 +31,15 @@ public class RTPCommand implements CommandExecutor {
         int x = random.nextInt(radius * 2 + 1) - radius;
         int z = random.nextInt(radius * 2 + 1) - radius;
         World world = Bukkit.getWorld(args[0]);
-        Location loc = getSafeLocation(world, x, z);
-        if(loc == null){
-            p.sendMessage(ChatColor.RED + "No safe location found!");
-            return true;
-        }
-        p.teleport(loc);
-        p.sendMessage(ChatColor.GREEN + "You were teleported to a random location!");
+        reference.getPlayerManager().delayTeleport(p, () -> {
+            Location loc = getSafeLocation(world, x, z);
+            if(loc == null){
+                p.sendMessage(ChatColor.RED + "No safe location found!");
+                return;
+            }
+            p.teleport(loc);
+            p.sendMessage(ChatColor.GREEN + "You were teleported to a random location!");
+        });
         return true;
     }
 
