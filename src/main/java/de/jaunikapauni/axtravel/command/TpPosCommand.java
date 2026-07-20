@@ -30,7 +30,13 @@ public class TpPosCommand implements CommandExecutor {
             return false;
         }
         reference.getPlayerManager().delayTeleport(p, () -> {
-            Location loc = new Location(p.getWorld(), Double.valueOf(args[0]), Double.valueOf(args[1]), Double.valueOf(args[2]), Float.valueOf(args[3]), Float.valueOf(args[4]));
+            Location loc;
+            try{
+                loc = new Location(p.getWorld(), Double.valueOf(args[0]), Double.valueOf(args[1]), Double.valueOf(args[2]), Float.valueOf(args[3]), Float.valueOf(args[4]));
+            } catch (NumberFormatException e) {
+                p.sendMessage("Only use numbers");
+                return;
+            }
             p.teleport(loc);
             p.sendMessage("You got teleported!");
         });
