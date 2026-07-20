@@ -28,7 +28,7 @@ public class SpawnCommand implements CommandExecutor {
         }
         reference.getPlayerManager().delayTeleport(p, () -> {
             Location spawn = reference.getSpawnLocation();
-            if(spawn.getWorld() == null){
+            if(spawn == null || spawn.getWorld() == null){
                 return;
             }
             p.teleport(spawn);

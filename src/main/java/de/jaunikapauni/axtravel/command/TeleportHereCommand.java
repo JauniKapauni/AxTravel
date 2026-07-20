@@ -35,9 +35,11 @@ public class TeleportHereCommand implements CommandExecutor {
         }
         Player target = Bukkit.getPlayerExact(args[0]);
         if(target == null){
+            p.sendMessage(ChatColor.RED + "Player not found!");
             return true;
         }
         if(!target.isOnline()){
+            p.sendMessage(ChatColor.RED + "Player is not online!");
             return false;
         }
         target.teleport(p.getLocation());

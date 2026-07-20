@@ -41,8 +41,10 @@ public class PlayerManager {
                 float yaw = rs.getFloat("yaw");
                 float pitch = rs.getFloat("pitch");
                 Location loc = new Location(world, x, y, z, yaw, pitch);
-                p.teleport(loc);
-                p.sendMessage("You was teleported to " + name);
+                Bukkit.getScheduler().runTask(reference, () -> {
+                    p.teleport(loc);
+                    p.sendMessage("You was teleported to " + name);
+                });
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -52,16 +54,24 @@ public class PlayerManager {
     public void homes(Player p) {
         try (Connection conn = reference.getDatabaseManager().getConnection()) {
             UUID uuid = p.getUniqueId();
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM homes WHERE uuid = ?");
-            ps.setString(1, uuid.toString());
-            ResultSet rs = ps.executeQuery();
-            p.sendMessage("Your homes:");
-            while (rs.next()) {
-                int x = rs.getInt("x");
-                int y = rs.getInt("y");
-                int z = rs.getInt("z");
-                String name = rs.getString("name");
-                p.sendMessage("- " + name + "(" + x + "|" + y + "|" + z + ")");
+            try(PreparedStatement ps = conn.prepareStatement("SELECT * FROM homes WHERE uuid = ?")){
+                ps.setString(1, uuid.toString());
+                try(ResultSet rs = ps.executeQuery()){
+                    List<String> homes = new ArrayList<>();
+                    while (rs.next()) {
+                        int x = rs.getInt("x");
+                        int y = rs.getInt("y");
+                        int z = rs.getInt("z");
+                        String name = rs.getString("name");
+                        homes.add("- " + name + "(" + x + "|" + y + "|" + z + ")");
+                    }
+                    Bukkit.getScheduler().runTask(reference, () -> {
+                        p.sendMessage("Your homes:");
+                        for(String home : homes){
+                            p.sendMessage(home);
+                        }
+                    });
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -71,18 +81,26 @@ public class PlayerManager {
     public void setHome(Player p, Location loc, String name) {
         try (Connection conn = reference.getDatabaseManager().getConnection()) {
             UUID uuid = p.getUniqueId();
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO homes(uuid, server, world, x, y, z, pitch, yaw, name) VALUES (?,?,?,?,?,?,?,?,?)");
-            ps.setString(1, uuid.toString());
-            ps.setString(2, reference.getMessage("server"));
-            ps.setString(3, loc.getWorld().getName());
-            ps.setDouble(4, loc.x());
-            ps.setDouble(5, loc.y());
-            ps.setDouble(6, loc.z());
-            ps.setDouble(7, loc.getPitch());
-            ps.setDouble(8, loc.getYaw());
-            ps.setString(9, name);
-            ps.executeUpdate();
-            p.sendMessage("Your home " + name + " was set!");
+            try(PreparedStatement delete = conn.prepareStatement("DELETE FROm homes WHERE uuid = ? AND name = ?")){
+                delete.setString(1, uuid.toString());
+                delete.setString(2, name);
+                delete.executeUpdate();
+            }
+            try(PreparedStatement ps = conn.prepareStatement("INSERT INTO homes(uuid, server, world, x, y, z, pitch, yaw, name) VALUES (?,?,?,?,?,?,?,?,?)")){
+                ps.setString(1, uuid.toString());
+                ps.setString(2, reference.getMessage("server"));
+                ps.setString(3, loc.getWorld().getName());
+                ps.setDouble(4, loc.x());
+                ps.setDouble(5, loc.y());
+                ps.setDouble(6, loc.z());
+                ps.setDouble(7, loc.getPitch());
+                ps.setDouble(8, loc.getYaw());
+                ps.setString(9, name);
+                ps.executeUpdate();
+                Bukkit.getScheduler().runTask(reference, () -> {
+                    p.sendMessage("Your home " + name + " was set!");
+                });
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -91,55 +109,74 @@ public class PlayerManager {
     public void setWarp(Player p, Location loc, String name) {
         try (Connection conn = reference.getDatabaseManager().getConnection()) {
             UUID uuid = p.getUniqueId();
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO warps(uuid, server, world, x, y, z, pitch, yaw, name) VALUES (?,?,?,?,?,?,?,?,?)");
-            ps.setString(1, uuid.toString());
-            ps.setString(2, reference.getMessage("server"));
-            ps.setString(3, loc.getWorld().getName());
-            ps.setDouble(4, loc.x());
-            ps.setDouble(5, loc.y());
-            ps.setDouble(6, loc.z());
-            ps.setDouble(7, loc.getPitch());
-            ps.setDouble(8, loc.getYaw());
-            ps.setString(9, name);
-            ps.executeUpdate();
-            p.sendMessage("Your warp " + name + " was set!");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public Location warp(Player p, String name) {
-        try (Connection conn = reference.getDatabaseManager().getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM warps WHERE name = ?");
-            ps.setString(1, name);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                World world = Bukkit.getWorld(rs.getString("world"));
-                double x = rs.getDouble("x");
-                double y = rs.getDouble("y");
-                double z = rs.getDouble("z");
-                float yaw = rs.getFloat("yaw");
-                float pitch = rs.getFloat("pitch");
-                Location loc = new Location(world, x, y, z, yaw, pitch);
-                return loc;
+            try(PreparedStatement delete = conn.prepareStatement("DELETE FROM warps WHERE name = ?")){
+                delete.setString(1, name);
+                delete.executeUpdate();
+            }
+            try(PreparedStatement ps = conn.prepareStatement("INSERT INTO warps(uuid, server, world, x, y, z, pitch, yaw, name) VALUES (?,?,?,?,?,?,?,?,?)")){
+                ps.setString(1, uuid.toString());
+                ps.setString(2, reference.getMessage("server"));
+                ps.setString(3, loc.getWorld().getName());
+                ps.setDouble(4, loc.x());
+                ps.setDouble(5, loc.y());
+                ps.setDouble(6, loc.z());
+                ps.setDouble(7, loc.getPitch());
+                ps.setDouble(8, loc.getYaw());
+                ps.setString(9, name);
+                ps.executeUpdate();
+                Bukkit.getScheduler().runTask(reference, () -> {
+                    p.sendMessage("Your warp " + name + " was set!");
+                });
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return null;
+    }
+
+    public void warp(Player p, String name) {
+        try (Connection conn = reference.getDatabaseManager().getConnection()) {
+            try(PreparedStatement ps = conn.prepareStatement("SELECT * FROM warps WHERE name = ?")){
+                ps.setString(1, name);
+                try(ResultSet rs = ps.executeQuery()){
+                    if (rs.next()) {
+                        World world = Bukkit.getWorld(rs.getString("world"));
+                        double x = rs.getDouble("x");
+                        double y = rs.getDouble("y");
+                        double z = rs.getDouble("z");
+                        float yaw = rs.getFloat("yaw");
+                        float pitch = rs.getFloat("pitch");
+                        Location loc = new Location(world, x, y, z, yaw, pitch);
+                        Bukkit.getScheduler().runTask(reference, () -> {
+                            p.teleport(loc);
+                            p.sendMessage("You were teleported to " + name);
+                        });
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void warps(Player p) {
         try (Connection conn = reference.getDatabaseManager().getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM warps");
-            ResultSet rs = ps.executeQuery();
-            p.sendMessage("Warps:");
-            while (rs.next()) {
-                int x = rs.getInt("x");
-                int y = rs.getInt("y");
-                int z = rs.getInt("z");
-                String name = rs.getString("name");
-                p.sendMessage("- " + name + "(" + x + "|" + y + "|" + z + ")");
+            try(PreparedStatement ps = conn.prepareStatement("SELECT * FROM warps")){
+                try(ResultSet rs = ps.executeQuery()){
+                    List<String> warps = new ArrayList<>();
+                    while (rs.next()) {
+                        int x = rs.getInt("x");
+                        int y = rs.getInt("y");
+                        int z = rs.getInt("z");
+                        String name = rs.getString("name");
+                        warps.add("- " + name + "(" + x + "|" + y + "|" + z + ")");
+                    }
+                    Bukkit.getScheduler().runTask(reference, () -> {
+                        p.sendMessage("Warps:");
+                        for(String warp : warps){
+                            p.sendMessage(warp);
+                        }
+                    });
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -148,6 +185,10 @@ public class PlayerManager {
 
     public void savePendingTeleport(UUID uuid, String targetServer, String world, double x, double y, double z, float yaw, float pitch) {
         try (Connection conn = reference.getDatabaseManager().getConnection()) {
+            try(PreparedStatement delete = conn.prepareStatement("DELETE from pending_teleports WHERE uuid = ?")){
+                delete.setString(1, uuid.toString());
+                delete.executeUpdate();
+            }
             try (PreparedStatement ps = conn.prepareStatement("INSERT INTO pending_teleports(uuid, target, world, x, y, z, yaw, pitch) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
                 ps.setString(1, uuid.toString());
                 ps.setString(2, targetServer);
@@ -185,7 +226,7 @@ public class PlayerManager {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return new String[0];
+        return null;
     }
 
     public void connectToServer(Player p, String server) {
@@ -215,19 +256,29 @@ public class PlayerManager {
         try (Connection conn = reference.getDatabaseManager().getConnection()) {
             try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM pending_teleports WHERE uuid = ?")) {
                 ps.setString(1, p.getUniqueId().toString());
-                ResultSet rs = ps.executeQuery();
-                if (rs.next()) {
-                    Location loc = new Location(Bukkit.getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"));
-                    p.teleport(loc);
-                    try(PreparedStatement delete = conn.prepareStatement("DELETE FROM pending_teleports WHERE uuid = ?")){
-                        delete.setString(1, p.getUniqueId().toString());
-                        delete.executeUpdate();
+                try(ResultSet rs = ps.executeQuery()){
+                    if (rs.next()) {
+                        Location loc = new Location(Bukkit.getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"));
+                        Bukkit.getScheduler().runTask(reference, () -> {
+                            p.teleport(loc);
+                        });
                     }
                 }
             }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
+            try(Connection conn = reference.getDatabaseManager().getConnection()){
+                try(PreparedStatement delete = conn.prepareStatement("DELETE FROM pending_teleports WHERE uuid = ?")){
+                    delete.setString(1, p.getUniqueId().toString());
+                    delete.executeUpdate();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public String[] getWarp(Player p, String name) {
@@ -250,7 +301,7 @@ public class PlayerManager {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return new String[0];
+        return null;
     }
 
     public void saveTpaRequest(UUID requesterUUID, String requesterName, String targetName){
@@ -309,18 +360,22 @@ public class PlayerManager {
         tpaExpireTasks.remove(targetName);
         String[] request = getTpaRequest(targetName);
         if(request == null || !request[0].equals(requesterUUID.toString())) return;
-        try(Connection conn = reference.getDatabaseManager().getConnection()){
-            try(PreparedStatement ps = conn.prepareStatement("DELETE FROM tpa_requests WHERE target_name = ?")){
-                ps.setString(1, targetName);
-                ps.executeUpdate();
+        Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
+            try(Connection conn = reference.getDatabaseManager().getConnection()){
+                try(PreparedStatement ps = conn.prepareStatement("DELETE FROM tpa_requests WHERE target_name = ?")){
+                    ps.setString(1, targetName);
+                    ps.executeUpdate();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        Player requester = Bukkit.getPlayer(requesterUUID);
-        if(requester != null) requester.sendMessage(ChatColor.RED + "Your teleport request to " + targetName + " expired!");
-        Player target = Bukkit.getPlayerExact(targetName);
-        if(target != null) target.sendMessage(ChatColor.RED + "Teleport request from " + requesterName + " expired!");
+        });
+        Bukkit.getScheduler().runTask(reference, () -> {
+            Player requester = Bukkit.getPlayer(requesterUUID);
+            if(requester != null) requester.sendMessage(ChatColor.RED + "Your teleport request to " + targetName + " expired!");
+            Player target = Bukkit.getPlayerExact(targetName);
+            if(target != null) target.sendMessage(ChatColor.RED + "Teleport request from " + requesterName + " expired!");
+        });
     }
 
     public void connectOtherToServer(Player sender, String playerName, String server){

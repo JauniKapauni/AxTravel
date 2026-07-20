@@ -22,8 +22,12 @@ public class PlayerJoinListener implements Listener {
             if(reference.isSpawnOnJoin()){
                 Bukkit.getScheduler().runTask(reference, () -> {
                     Location spawn = reference.getSpawnLocation();
-                    p.teleport(spawn);
-                    p.sendMessage(ChatColor.GREEN + "You were teleported to the spawn!");
+                    if(spawn != null && spawn.getWorld() != null){
+                        Bukkit.getScheduler().runTask(reference, () -> {
+                            p.teleport(spawn);
+                            p.sendMessage(ChatColor.GREEN + "You were teleported to the spawn!");
+                        });
+                    }
                 });
             }
             reference.getPlayerManager().checkForPending(p);
