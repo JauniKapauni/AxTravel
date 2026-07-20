@@ -28,6 +28,9 @@ public class SpawnCommand implements CommandExecutor {
         }
         reference.getPlayerManager().delayTeleport(p, () -> {
             Location spawn = reference.getSpawnLocation();
+            if(spawn.getWorld() == null){
+                return;
+            }
             p.teleport(spawn);
             p.sendMessage(ChatColor.GREEN + "You were teleported to the spawn!");
         });
