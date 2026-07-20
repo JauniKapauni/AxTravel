@@ -25,8 +25,8 @@ public class PlayerJoinListener implements Listener {
                     p.teleport(spawn);
                     p.sendMessage(ChatColor.GREEN + "You were teleported to the spawn!");
                 });
-                reference.getPlayerManager().checkForPending(p);
             }
+            reference.getPlayerManager().checkForPending(p);
             String[] tpaRequest = reference.getPlayerManager().getTpaRequest(p.getName());
             if(tpaRequest != null){
                 Bukkit.getScheduler().runTask(reference, () -> {
