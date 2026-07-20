@@ -37,7 +37,7 @@ public class DatabaseManager {
 
     public boolean initDatabaseTable1(){
         try(Connection conn = getConnection()){
-            try(PreparedStatement ps = conn.prepareStatement("CREATE TABLE IF NOT EXISTS homes(uuid VARCHAR(255), server VARCHAR(255), world VARCHAR(255), x DOUBLE, y DOUBLE, z DOUBLE, pitch FLOAT, yaw FLOAT, name VARCHAR(255) PRIMARY KEY)")){
+            try(PreparedStatement ps = conn.prepareStatement("CREATE TABLE IF NOT EXISTS homes(uuid VARCHAR(255), server VARCHAR(255), world VARCHAR(255), x DOUBLE, y DOUBLE, z DOUBLE, pitch FLOAT, yaw FLOAT, name VARCHAR(255), PRIMARY KEY(uuid, name))")){
                 ps.executeUpdate();
                 return true;
             }
