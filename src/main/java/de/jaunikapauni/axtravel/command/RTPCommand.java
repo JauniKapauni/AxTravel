@@ -30,6 +30,9 @@ public class RTPCommand implements CommandExecutor {
             return false;
         }
         World world = Bukkit.getWorld(args[0]);
+        if(world == null){
+            return false;
+        }
         reference.getPlayerManager().delayTeleport(p, () -> {
             Random random = new Random();
             int radius = reference.getConfig().getInt("radiusOfRTP");
