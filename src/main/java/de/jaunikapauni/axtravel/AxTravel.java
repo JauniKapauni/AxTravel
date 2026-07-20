@@ -44,7 +44,7 @@ public final class AxTravel extends JavaPlugin {
         databaseManager = new DatabaseManager(this);
         playerManager = new PlayerManager(this);
         try{
-            if(databaseManager.initDatabaseTable1() && databaseManager.initDatabaseTable2() && databaseManager.initDatabaseTable3() && databaseManager.initDatabaseTable4() && databaseManager.initDatabaseTable5() == false){
+            if(!databaseManager.initDatabaseTable1() || !databaseManager.initDatabaseTable2() || !databaseManager.initDatabaseTable3() || !databaseManager.initDatabaseTable4() || !databaseManager.initDatabaseTable5()){
                 getLogger().severe("Error creating tables!");
             }
         } catch (Exception e) {
