@@ -13,39 +13,49 @@ import java.util.UUID;
 
 public class TpAcceptCommand implements CommandExecutor {
     AxTravel reference;
-    public TpAcceptCommand(AxTravel reference){
+
+    public TpAcceptCommand(AxTravel reference) {
         this.reference = reference;
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-        if(!(sender instanceof Player)){
+        if (!(sender instanceof Player)) {
             sender.sendMessage("Only players can run this command!");
             return true;
         }
         Player p = (Player) sender;
-        if(!p.hasPermission("axtravel.tpaccept")){
+        if (!p.hasPermission("axtravel.tpaccept")) {
             p.sendMessage("You don't have the permission! [axtravel.tpaccept]");
             return true;
         }
         String[] request = reference.getPlayerManager().getTpaRequest(p.getName());
-        if(request == null){
+        if (request == null) {
             p.sendMessage(ChatColor.RED + "No pending teleport requests!");
             return true;
         }
         reference.getPlayerManager().delayTeleport(p, () -> {
-            UUID requesterUUID = UUID.fromString(request[0]);
-            String requesterName = request[1];
-            reference.getPlayerManager().deleteTpaRequest(p.getName());
-            Player requester = Bukkit.getPlayer(requesterUUID);
-            if(requester != null){
-                requester.teleport(p.getLocation());
-                requester.sendMessage(ChatColor.GREEN + p.getName() + " accepted your teleport request!");
-                p.sendMessage(ChatColor.GREEN + requesterName + " was teleported to you!");
-            } else {
-                reference.getPlayerManager().savePendingTeleport(requesterUUID, reference.getMessage("server"), p.getWorld().getName(), p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), p.getLocation().getYaw(), p.getLocation().getPitch());
-                reference.getPlayerManager().connectOtherToServer(p, requesterName, reference.getMessage("server"));
-                p.sendMessage(ChatColor.GREEN + "Teleport accepted! " + requesterName + " is being connected to this server!");
-            }
+            Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
+                UUID requesterUUID = UUID.fromString(request[0]);
+                String requesterName = request[1];
+                reference.getPlayerManager().deleteTpaRequest(p.getName());
+                Bukkit.getScheduler().runTask(reference, () -> {
+                    Player requester = Bukkit.getPlayer(requesterUUID);
+                    if (requester != null) {
+                        requester.teleport(p.getLocation());
+                        requester.sendMessage(ChatColor.GREEN + p.getName() + " accepted your teleport request!");
+                        p.sendMessage(ChatColor.GREEN + requesterName + " was teleported to you!");
+                    } else {
+                        Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
+                            reference.getPlayerManager().savePendingTeleport(requesterUUID, reference.getMessage("server"), p.getWorld().getName(), p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), p.getLocation().getYaw(), p.getLocation().getPitch());
+                            reference.getPlayerManager().connectOtherToServer(p, requesterName, reference.getMessage("server"));
+                        });
+                        Bukkit.getScheduler().runTask(reference, () -> {
+                            p.sendMessage(ChatColor.GREEN + "Teleport accepted! " + requesterName + " is being connected to this server!");
+                        });
+                    }
+                });
+            });
         });
         return true;
     }

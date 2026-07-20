@@ -1,6 +1,7 @@
 package de.jaunikapauni.axtravel.command;
 
 import de.jaunikapauni.axtravel.AxTravel;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,8 +24,12 @@ public class DelWarpCommand implements CommandExecutor {
             p.sendMessage("You don't have the permission! [axtravel.delwarp]");
             return true;
         }
-        reference.getPlayerManager().delWarp(args[0]);
-        p.sendMessage("The warp " + args[0] + " was deleted");
+        Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
+            reference.getPlayerManager().delWarp(args[0]);
+            Bukkit.getScheduler().runTask(reference, () -> {
+                p.sendMessage("The warp " + args[0] + " was deleted");
+            });
+        });
         return true;
     }
 }

@@ -1,6 +1,7 @@
 package de.jaunikapauni.axtravel.listener;
 
 import de.jaunikapauni.axtravel.AxTravel;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,6 +16,8 @@ public class PlayerQuitListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e){
         Player p = e.getPlayer();
-        reference.getPlayerManager().updatePlayerStatus(p.getUniqueId(), p.getName(), "", false);
+        Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
+            reference.getPlayerManager().updatePlayerStatus(p.getUniqueId(), p.getName(), "", false);
+        });
     }
 }

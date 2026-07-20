@@ -1,6 +1,7 @@
 package de.jaunikapauni.axtravel.command;
 
 import de.jaunikapauni.axtravel.AxTravel;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,8 +24,12 @@ public class DelHomeCommand implements CommandExecutor {
             p.sendMessage("You don't have the permission! [axtravel.delhome]");
             return true;
         }
-        reference.getPlayerManager().delHome(p, args[0]);
-        p.sendMessage("Your home " + args[0] + " was successfully deleted!");
+        Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
+            reference.getPlayerManager().delHome(p, args[0]);
+            Bukkit.getScheduler().runTask(reference, () -> {
+                p.sendMessage("Your home " + args[0] + " was successfully deleted!");
+            });
+        });
         return true;
     }
 }

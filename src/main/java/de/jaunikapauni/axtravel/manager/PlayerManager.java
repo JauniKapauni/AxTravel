@@ -108,7 +108,7 @@ public class PlayerManager {
         }
     }
 
-    public void warp(Player p, String name) {
+    public Location warp(Player p, String name) {
         try (Connection conn = reference.getDatabaseManager().getConnection()) {
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM warps WHERE name = ?");
             ps.setString(1, name);
@@ -121,12 +121,12 @@ public class PlayerManager {
                 float yaw = rs.getFloat("yaw");
                 float pitch = rs.getFloat("pitch");
                 Location loc = new Location(world, x, y, z, yaw, pitch);
-                p.teleport(loc);
-                p.sendMessage("You was teleported to " + name);
+                return loc;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return null;
     }
 
     public void warps(Player p) {

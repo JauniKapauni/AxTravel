@@ -25,14 +25,18 @@ public class TpaCommand implements CommandExecutor {
             p.sendMessage("You don't have the permission! [axtravel.tpa]");
             return true;
         }
-        reference.getPlayerManager().saveTpaRequest(p.getUniqueId(), p.getName(), args[0]);
-        Player target = Bukkit.getPlayerExact(args[0]);
-        if(target != null){
-            target.sendMessage(ChatColor.YELLOW + p.getName() + " wants to teleport to you! Use /tpaccept or /tpdeny");
-        } else {
-            reference.getPlayerManager().sendMessageToPlayer(p, args[0], ChatColor.YELLOW + p.getName() + " wants to teleport to you! Use /tpaccept or /tpdeny" );
-        }
-        p.sendMessage(ChatColor.GREEN + "Teleport request sent to " + args[0] + "!");
+        Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
+            reference.getPlayerManager().saveTpaRequest(p.getUniqueId(), p.getName(), args[0]);
+            Bukkit.getScheduler().runTask(reference, () -> {
+                Player target = Bukkit.getPlayerExact(args[0]);
+                if(target != null){
+                    target.sendMessage(ChatColor.YELLOW + p.getName() + " wants to teleport to you! Use /tpaccept or /tpdeny");
+                } else {
+                    reference.getPlayerManager().sendMessageToPlayer(p, args[0], ChatColor.YELLOW + p.getName() + " wants to teleport to you! Use /tpaccept or /tpdeny" );
+                }
+                p.sendMessage(ChatColor.GREEN + "Teleport request sent to " + args[0] + "!");
+            });
+        });
         return true;
     }
 }

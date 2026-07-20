@@ -19,34 +19,37 @@ import java.util.UUID;
 
 public class HomeCommand implements CommandExecutor {
     AxTravel reference;
-    public HomeCommand(AxTravel reference){
+
+    public HomeCommand(AxTravel reference) {
         this.reference = reference;
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-        if(!(sender instanceof Player)){
+        if (!(sender instanceof Player)) {
             sender.sendMessage("Only players can run this command!");
             return true;
         }
-        if(args.length == 0){
+        if (args.length == 0) {
             sender.sendMessage(ChatColor.RED + "Please enter a home name!");
             return false;
         }
         Player p = (Player) sender;
-        if(!p.hasPermission("axtravel.home")){
+        if (!p.hasPermission("axtravel.home")) {
             p.sendMessage("You don't have the permission! [axtravel.home]");
             return true;
         }
         reference.getPlayerManager().delayTeleport(p, () -> {
-            String targetServer = reference.getPlayerManager().getHome(p, args[0])[0];
-            if(reference.getMessage("server").equals(targetServer)){
-                reference.getPlayerManager().home(p, args[0]);
-            } else {
-                String[] home = reference.getPlayerManager().getHome(p, args[0]);
-                reference.getPlayerManager().savePendingTeleport(p.getUniqueId(), home[0], home[1], Double.valueOf(home[2]), Double.valueOf(home[3]), Double.valueOf(home[4]), Float.valueOf(home[5]), Float.valueOf(home[6]));
-                reference.getPlayerManager().connectToServer(p, targetServer);
-            }
+            Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
+                String targetServer = reference.getPlayerManager().getHome(p, args[0])[0];
+                if (reference.getMessage("server").equals(targetServer)) {
+                    reference.getPlayerManager().home(p, args[0]);
+                } else {
+                    String[] home = reference.getPlayerManager().getHome(p, args[0]);
+                    reference.getPlayerManager().savePendingTeleport(p.getUniqueId(), home[0], home[1], Double.valueOf(home[2]), Double.valueOf(home[3]), Double.valueOf(home[4]), Float.valueOf(home[5]), Float.valueOf(home[6]));
+                    reference.getPlayerManager().connectToServer(p, targetServer);
+                }
+            });
         });
         return true;
     }

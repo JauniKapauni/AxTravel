@@ -34,12 +34,16 @@ public class TpDenyCommand implements CommandExecutor {
         }
         UUID requesterUUID = UUID.fromString(request[0]);
         String requesterName = request[1];
-        reference.getPlayerManager().deleteTpaRequest(p.getName());
-        Player requester = Bukkit.getPlayer(requesterUUID);
-        if(requester != null){
-            requester.sendMessage(ChatColor.RED + p.getName() + " denied your teleport request!");
-        }
-        p.sendMessage(ChatColor.GREEN + "Teleport request from " + requesterName + " denied!");
+        Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
+            reference.getPlayerManager().deleteTpaRequest(p.getName());
+            Bukkit.getScheduler().runTask(reference, () -> {
+                Player requester = Bukkit.getPlayer(requesterUUID);
+                if(requester != null){
+                    requester.sendMessage(ChatColor.RED + p.getName() + " denied your teleport request!");
+                }
+                p.sendMessage(ChatColor.GREEN + "Teleport request from " + requesterName + " denied!");
+            });
+        });
         return true;
     }
 }

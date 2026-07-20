@@ -32,7 +32,9 @@ public class SetWarpCommand implements CommandExecutor {
             return true;
         }
         Location loc = Bukkit.getServer().getPlayer(p.getUniqueId()).getLocation();
-        reference.getPlayerManager().setWarp(p, loc, args[0]);
+        Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
+            reference.getPlayerManager().setWarp(p, loc, args[0]);
+        });
         return true;
     }
 }

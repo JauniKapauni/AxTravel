@@ -1,6 +1,7 @@
 package de.jaunikapauni.axtravel.command;
 
 import de.jaunikapauni.axtravel.AxTravel;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,7 +30,9 @@ public class WarpsCommand implements CommandExecutor {
             p.sendMessage("You don't have the permission! [axtravel.warps]");
             return true;
         }
-        reference.getPlayerManager().warps(p);
+        Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
+            reference.getPlayerManager().warps(p);
+        });
         return true;
     }
 }

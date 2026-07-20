@@ -39,14 +39,20 @@ public class WarpCommand implements CommandExecutor {
             return true;
         }
         reference.getPlayerManager().delayTeleport(p, () -> {
-            String targetServer = reference.getPlayerManager().getWarp(p, args[0])[0];
-            if(reference.getMessage("server").equals(targetServer)){
-                reference.getPlayerManager().warp(p, args[0]);
-            } else {
-                String[] warp = reference.getPlayerManager().getWarp(p, args[0]);
-                reference.getPlayerManager().savePendingTeleport(p.getUniqueId(), warp[0], warp[1], Double.valueOf(warp[2]), Double.valueOf(warp[3]), Double.valueOf(warp[4]), Float.valueOf(warp[5]), Float.valueOf(warp[6]));
-                reference.getPlayerManager().connectToServer(p, targetServer);
-            }
+            Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
+                String targetServer = reference.getPlayerManager().getWarp(p, args[0])[0];
+                if(reference.getMessage("server").equals(targetServer)){
+                    Location loc = reference.getPlayerManager().warp(p, args[0]);
+                    Bukkit.getScheduler().runTask(reference, () -> {
+                        p.teleport(loc);
+                        p.sendMessage("You was teleported to " + args[0]);
+                    });
+                } else {
+                    String[] warp = reference.getPlayerManager().getWarp(p, args[0]);
+                    reference.getPlayerManager().savePendingTeleport(p.getUniqueId(), warp[0], warp[1], Double.valueOf(warp[2]), Double.valueOf(warp[3]), Double.valueOf(warp[4]), Float.valueOf(warp[5]), Float.valueOf(warp[6]));
+                    reference.getPlayerManager().connectToServer(p, targetServer);
+                }
+            });
         });
         return true;
     }

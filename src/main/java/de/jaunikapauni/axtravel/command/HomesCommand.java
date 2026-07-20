@@ -1,6 +1,7 @@
 package de.jaunikapauni.axtravel.command;
 
 import de.jaunikapauni.axtravel.AxTravel;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,7 +32,9 @@ public class HomesCommand implements CommandExecutor {
             p.sendMessage("You don't have the permission! [axtravel.homes]");
             return true;
         }
-        reference.getPlayerManager().homes(p);
+        Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
+            reference.getPlayerManager().homes(p);
+        });
         return true;
     }
 }

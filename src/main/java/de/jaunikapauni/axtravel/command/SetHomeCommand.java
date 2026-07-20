@@ -32,7 +32,9 @@ public class SetHomeCommand implements CommandExecutor {
             return true;
         }
         Location loc = Bukkit.getServer().getPlayer(p.getUniqueId()).getLocation();
-        reference.getPlayerManager().setHome(p, loc, args[0]);
+        Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
+            reference.getPlayerManager().setHome(p, loc, args[0]);
+        });
         return true;
     }
 }

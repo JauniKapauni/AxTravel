@@ -1,6 +1,7 @@
 package de.jaunikapauni.axtravel.listener;
 
 import de.jaunikapauni.axtravel.AxTravel;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -17,16 +18,22 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e){
         Player p = e.getPlayer();
-        if(reference.isSpawnOnJoin()){
-            Location spawn = reference.getSpawnLocation();
-            p.teleport(spawn);
-            p.sendMessage(ChatColor.GREEN + "You were teleported to the spawn!");
-            reference.getPlayerManager().checkForPending(p);
-        }
-        String[] tpaRequest = reference.getPlayerManager().getTpaRequest(p.getName());
-        if(tpaRequest != null){
-            p.sendMessage(ChatColor.YELLOW + tpaRequest[1] + " wants to teleport to you! Use /tpaccept or /tpdeny");
-        }
-        reference.getPlayerManager().updatePlayerStatus(p.getUniqueId(), p.getName(), reference.getMessage("server"), true);
+        Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
+            if(reference.isSpawnOnJoin()){
+                Bukkit.getScheduler().runTask(reference, () -> {
+                    Location spawn = reference.getSpawnLocation();
+                    p.teleport(spawn);
+                    p.sendMessage(ChatColor.GREEN + "You were teleported to the spawn!");
+                });
+                reference.getPlayerManager().checkForPending(p);
+            }
+            String[] tpaRequest = reference.getPlayerManager().getTpaRequest(p.getName());
+            if(tpaRequest != null){
+                Bukkit.getScheduler().runTask(reference, () -> {
+                    p.sendMessage(ChatColor.YELLOW + tpaRequest[1] + " wants to teleport to you! Use /tpaccept or /tpdeny");
+                });
+            }
+            reference.getPlayerManager().updatePlayerStatus(p.getUniqueId(), p.getName(), reference.getMessage("server"), true);
+        });
     }
 }
