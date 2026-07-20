@@ -41,6 +41,9 @@ public class WarpCommand implements CommandExecutor {
         reference.getPlayerManager().delayTeleport(p, () -> {
             Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
                 String targetServer = reference.getPlayerManager().getWarp(p, args[0])[0];
+                if(targetServer == null){
+                    return;
+                }
                 if(reference.getMessage("server").equals(targetServer)){
                     Location loc = reference.getPlayerManager().warp(p, args[0]);
                     Bukkit.getScheduler().runTask(reference, () -> {

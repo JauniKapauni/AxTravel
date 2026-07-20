@@ -45,6 +45,9 @@ public class HomeCommand implements CommandExecutor {
         reference.getPlayerManager().delayTeleport(p, () -> {
             Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
                 String targetServer = reference.getPlayerManager().getHome(p, args[0])[0];
+                if(targetServer == null){
+                    return;
+                }
                 if (reference.getMessage("server").equals(targetServer)) {
                     reference.getPlayerManager().home(p, args[0]);
                 } else {
