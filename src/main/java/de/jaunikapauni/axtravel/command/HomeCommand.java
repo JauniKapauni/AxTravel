@@ -39,6 +39,9 @@ public class HomeCommand implements CommandExecutor {
             p.sendMessage("You don't have the permission! [axtravel.home]");
             return true;
         }
+        if(args.length == 0){
+            return false;
+        }
         reference.getPlayerManager().delayTeleport(p, () -> {
             Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
                 String targetServer = reference.getPlayerManager().getHome(p, args[0])[0];

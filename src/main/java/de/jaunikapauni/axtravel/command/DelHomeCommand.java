@@ -24,6 +24,9 @@ public class DelHomeCommand implements CommandExecutor {
             p.sendMessage("You don't have the permission! [axtravel.delhome]");
             return true;
         }
+        if(args.length == 0){
+            return false;
+        }
         Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
             reference.getPlayerManager().delHome(p, args[0]);
             Bukkit.getScheduler().runTask(reference, () -> {

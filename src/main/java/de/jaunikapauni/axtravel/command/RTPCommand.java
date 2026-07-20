@@ -26,6 +26,9 @@ public class RTPCommand implements CommandExecutor {
             return true;
         }
         Player p = (Player) sender;
+        if(args.length == 0){
+            return false;
+        }
         World world = Bukkit.getWorld(args[0]);
         reference.getPlayerManager().delayTeleport(p, () -> {
             Random random = new Random();

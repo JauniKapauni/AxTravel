@@ -24,6 +24,9 @@ public class DelWarpCommand implements CommandExecutor {
             p.sendMessage("You don't have the permission! [axtravel.delwarp]");
             return true;
         }
+        if(args.length == 0){
+            return false;
+        }
         Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
             reference.getPlayerManager().delWarp(args[0]);
             Bukkit.getScheduler().runTask(reference, () -> {

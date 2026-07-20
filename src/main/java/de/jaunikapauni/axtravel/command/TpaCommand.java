@@ -25,6 +25,9 @@ public class TpaCommand implements CommandExecutor {
             p.sendMessage("You don't have the permission! [axtravel.tpa]");
             return true;
         }
+        if(args.length == 0){
+            return false;
+        }
         Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
             reference.getPlayerManager().saveTpaRequest(p.getUniqueId(), p.getName(), args[0]);
             Bukkit.getScheduler().runTask(reference, () -> {

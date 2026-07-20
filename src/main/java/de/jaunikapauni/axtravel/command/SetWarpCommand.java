@@ -31,6 +31,9 @@ public class SetWarpCommand implements CommandExecutor {
             p.sendMessage("You don't have the permission! [axtravel.setwarp]");
             return true;
         }
+        if(args.length == 0){
+            return false;
+        }
         Location loc = Bukkit.getServer().getPlayer(p.getUniqueId()).getLocation();
         Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
             reference.getPlayerManager().setWarp(p, loc, args[0]);

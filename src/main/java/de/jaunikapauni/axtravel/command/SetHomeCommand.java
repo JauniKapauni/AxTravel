@@ -31,6 +31,9 @@ public class SetHomeCommand implements CommandExecutor {
             p.sendMessage("You don't have the permission! [axtravel.sethome]");
             return true;
         }
+        if(args.length == 0){
+            return false;
+        }
         Location loc = Bukkit.getServer().getPlayer(p.getUniqueId()).getLocation();
         Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
             reference.getPlayerManager().setHome(p, loc, args[0]);

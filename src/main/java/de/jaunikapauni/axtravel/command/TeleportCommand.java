@@ -30,6 +30,9 @@ public class TeleportCommand implements CommandExecutor {
             p.sendMessage("You don't have the permission! [axtravel.teleport]");
             return true;
         }
+        if(args.length == 0){
+            return false;
+        }
         Player target = Bukkit.getPlayerExact(args[0]);
         p.teleport(target.getLocation());
         p.sendMessage(ChatColor.GREEN + "You were teleported to " + target.getName());
