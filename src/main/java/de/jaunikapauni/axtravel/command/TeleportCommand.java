@@ -34,6 +34,9 @@ public class TeleportCommand implements CommandExecutor {
             return false;
         }
         Player target = Bukkit.getPlayerExact(args[0]);
+        if(target == null){
+            return true;
+        }
         if(!target.isOnline()){
             return false;
         }
