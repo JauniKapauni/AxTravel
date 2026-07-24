@@ -19,7 +19,8 @@ public class PlayerJoinListener implements Listener {
     public void onJoin(PlayerJoinEvent e){
         Player p = e.getPlayer();
         Bukkit.getScheduler().runTaskAsynchronously(reference, () -> {
-            if(reference.isSpawnOnJoin()){
+            boolean hasPending = reference.getPlayerManager().checkForPending(p);
+            if(!hasPending && reference.isSpawnOnJoin()){
                 Bukkit.getScheduler().runTask(reference, () -> {
                     Location spawn = reference.getSpawnLocation();
                     if(spawn != null && spawn.getWorld() != null){
@@ -30,7 +31,6 @@ public class PlayerJoinListener implements Listener {
                     }
                 });
             }
-            reference.getPlayerManager().checkForPending(p);
             String[] tpaRequest = reference.getPlayerManager().getTpaRequest(p.getName());
             if(tpaRequest != null){
                 Bukkit.getScheduler().runTask(reference, () -> {
