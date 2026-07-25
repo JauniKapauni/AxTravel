@@ -79,14 +79,31 @@ public class PlayerManager {
     }
 
     public void setHome(Player p, Location loc, String name) {
-        if(!reference.getEconomyAPI().has(p.getUniqueId(), 500)){
-            Bukkit.getScheduler().runTask(reference, () -> {
-                p.sendMessage("You don't have enough money!");
-            });
-            return;
-        }
         try (Connection conn = reference.getDatabaseManager().getConnection()) {
             UUID uuid = p.getUniqueId();
+            try(PreparedStatement count = conn.prepareStatement("SELECT COUNT(*) FROM homes WHERE uuid = ?")){
+                count.setString(1, uuid.toString());
+                ResultSet rs = count.executeQuery();
+                if(rs.next() && rs.getInt(1) >= 3){
+                    try(PreparedStatement check = conn.prepareStatement("SELECT name FROM homes WHERE uuid = ? AND name = ?")){
+                        check.setString(1, uuid.toString());
+                        check.setString(2, name);
+                        ResultSet existing = check.executeQuery();
+                        if(!existing.next()){
+                            Bukkit.getScheduler().runTask(reference, () -> {
+                                p.sendMessage("You can only have 3 homes!");
+                            });
+                            return;
+                        }
+                    }
+                }
+            }
+            if(!reference.getEconomyAPI().has(p.getUniqueId(), 500)){
+                Bukkit.getScheduler().runTask(reference, () -> {
+                    p.sendMessage("You don't have enough money!");
+                });
+                return;
+            }
             try(PreparedStatement delete = conn.prepareStatement("DELETE FROM homes WHERE uuid = ? AND name = ?")){
                 delete.setString(1, uuid.toString());
                 delete.setString(2, name);
