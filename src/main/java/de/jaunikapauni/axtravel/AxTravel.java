@@ -56,7 +56,13 @@ public final class AxTravel extends JavaPlugin {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        AxEconomy axEconomy = (AxEconomy) Bukkit.getPluginManager().getPlugin("AxEconomy");
+        if(Bukkit.getPluginManager().getPlugin("AxEconomy") != null){
+            AxEconomy axEconomy = (AxEconomy) Bukkit.getPluginManager().getPlugin("AxEconomy");
+            if(axEconomy == null){
+                throw new IllegalStateException("AxEconomy is missing");
+            }
+            economyAPI = axEconomy.getEconomyAPI();
+        }
         getCommand("home").setExecutor(new HomeCommand(this));
         getCommand("home").setTabCompleter(new HomeTabCompleter(this));
         getCommand("homes").setExecutor(new HomesCommand(this));
