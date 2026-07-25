@@ -107,6 +107,9 @@ public class PlayerManager {
                     p.sendMessage("Your home " + name + " was set!");
                 });
                 reference.getEconomyAPI().withdraw(p.getUniqueId(), 500);
+                Bukkit.getScheduler().runTask(reference, () -> {
+                    p.sendMessage("Your balance was reduced by 500!");
+                });
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
