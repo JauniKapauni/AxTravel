@@ -10,6 +10,9 @@ load: POSTWORLD
 authors: [ JauniKapauni ]
 website: https://github.com/JauniKapauni
 
+depend:
+  - AxEconomy
+
 commands:
   home:
   homes:

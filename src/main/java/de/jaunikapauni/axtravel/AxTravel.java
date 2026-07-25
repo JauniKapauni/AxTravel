@@ -1,5 +1,7 @@
 package de.jaunikapauni.axtravel;
 
+import de.jaunikapauni.axeconomy.AxEconomy;
+import de.jaunikapauni.axeconomy.api.EconomyAPI;
 import de.jaunikapauni.axtravel.command.*;
 import de.jaunikapauni.axtravel.listener.PlayerJoinListener;
 import de.jaunikapauni.axtravel.listener.PlayerQuitListener;
@@ -33,6 +35,10 @@ public final class AxTravel extends JavaPlugin {
     public PlayerManager getPlayerManager(){
         return playerManager;
     }
+    EconomyAPI economyAPI;
+    public EconomyAPI getEconomyAPI(){
+        return economyAPI;
+    }
 
     @Override
     public void onEnable() {
@@ -50,6 +56,7 @@ public final class AxTravel extends JavaPlugin {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        AxEconomy axEconomy = (AxEconomy) Bukkit.getPluginManager().getPlugin("AxEconomy");
         getCommand("home").setExecutor(new HomeCommand(this));
         getCommand("home").setTabCompleter(new HomeTabCompleter(this));
         getCommand("homes").setExecutor(new HomesCommand(this));

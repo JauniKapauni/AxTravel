@@ -79,9 +79,15 @@ public class PlayerManager {
     }
 
     public void setHome(Player p, Location loc, String name) {
+        if(!reference.getEconomyAPI().has(p.getUniqueId(), 500)){
+            Bukkit.getScheduler().runTask(reference, () -> {
+                p.sendMessage("You don't have enough money!");
+            });
+            return;
+        }
         try (Connection conn = reference.getDatabaseManager().getConnection()) {
             UUID uuid = p.getUniqueId();
-            try(PreparedStatement delete = conn.prepareStatement("DELETE FROm homes WHERE uuid = ? AND name = ?")){
+            try(PreparedStatement delete = conn.prepareStatement("DELETE FROM homes WHERE uuid = ? AND name = ?")){
                 delete.setString(1, uuid.toString());
                 delete.setString(2, name);
                 delete.executeUpdate();
@@ -100,6 +106,7 @@ public class PlayerManager {
                 Bukkit.getScheduler().runTask(reference, () -> {
                     p.sendMessage("Your home " + name + " was set!");
                 });
+                reference.getEconomyAPI().withdraw(p.getUniqueId(), 500);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
