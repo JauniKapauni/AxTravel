@@ -17,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public final class AxTravel extends JavaPlugin {
     File serverFile;
@@ -88,6 +89,7 @@ public final class AxTravel extends JavaPlugin {
         getCommand("delwarp").setExecutor(new DelWarpCommand(this));
         getCommand("delwarp").setTabCompleter(new DelWarpTabCompleter(this));
         getCommand("rtp").setExecutor(new RTPCommand(this));
+        getCommand("rtp").setTabCompleter(new RTPTabCompleter(this));
         getCommand("tppos").setExecutor(new TpPosCommand(this));
         getServer().getPluginManager().registerEvents(new PlayerRespawnListener(this), this);
         getLogger().info("");

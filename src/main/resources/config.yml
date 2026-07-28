@@ -13,3 +13,7 @@ spawn:
   z: 0
   yaw: 0
   pitch: 0
+rtp-tabcompletions:
+  - world1
+  - world2
+  - world3
